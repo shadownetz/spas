@@ -1,0 +1,196 @@
+{% extends 'dashboard/authBase.html' %}
+{% load static %}
+{% block title %} Student Registeration {% endblock %}
+
+{% block style %}
+    <style>
+        .user-avatar{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: transparent;
+        }
+        .image-upload{
+            position: absolute;
+            visibility: hidden;
+        }
+        #profile{
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="studentReg" class="card card-bordered">
+        <div class="card-inner card-inner-lg">
+            <div class="nk-block-head">
+                <div class="nk-block-head-content">
+                    <h4 class="nk-block-title">Student Registration</h4>
+                    <div class="nk-block-des">
+                        <p>
+                            Register into the SPAS portal using your valid credentials
+                        </p>
+                    </div>
+                    {% if error %}
+                        <div class="alert alert-icon alert-danger" role="alert">
+                            <em class="icon ni ni-cross-circle"></em>
+                            <strong>Error</strong>.
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                    <div class="alert alert-icon alert-primary" role="alert" v-if="error">
+                        <em class="icon ni ni-alert-circle"></em>
+                        <strong>Warning</strong>.
+                        [[message]]
+                    </div>
+                </div>
+            </div>
+            <form @submit.prevent="validate" method="post" enctype="multipart/form-data" ref="studentForm">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center">
+                    <label for="profile-image">
+                        <div class="user-avatar lg">
+                            <img id="profile" src="{% static 'dashboard/assets/images/icons/user.png' %}" alt="student image">
+                        </div>
+                        <input @change="attachAvatar" type="file" name="avatar" class="image-upload" id="profile-image" accept="image/*">
+                    </label>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Full Name</label>
+                    </div>
+                    <input type="text" v-model="student.fullName" name="name" class="form-control form-control-lg" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Email</label>
+                    </div>
+                    <input type="email" v-model="student.email" name="email" class="form-control form-control-lg" placeholder="Enter your email address or username">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Phone</label>
+                    </div>
+                    <input type="tel" v-model="student.phone" name="phone" class="form-control form-control-lg" placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Address</label>
+                    </div>
+                    <input type="text" v-model="student.address" name="address" class="form-control form-control-lg" placeholder="Enter your contact address">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Faculty</label>
+                    </div>
+                    <input type="text" v-model="student.faculty" name="faculty" class="form-control form-control-lg" placeholder="Enter your faculty">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Department</label>
+                    </div>
+                    <input type="text" v-model="student.department" name="department" class="form-control form-control-lg" placeholder="Enter your department">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Current Level</label>
+                    </div>
+                    <input type="number" v-model="student.level" name="level" class="form-control form-control-lg" placeholder="current level">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label">Registration Number <sup class="text-primary">* unique to every student</sup></label>
+                    </div>
+                    <input type="text" v-model="student.regNo" name="regNo" class="form-control form-control-lg" placeholder="Enter your registration number">
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label" for="password">Password</label>
+                        {#                        <a class="link link-primary link-sm" href="auth-reset-v2.html">Forgot Code?</a>#}
+                    </div>
+                    <div class="form-control-wrap">
+                        <input type="password" v-model="student.password" id="password" name="password" class="form-control form-control-lg" placeholder="Enter your passcode">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label" for="password">Retype Password</label>
+                    </div>
+                    <div class="form-control-wrap">
+                        <input type="password" v-model="student.repassword" name="repass" class="form-control form-control-lg" placeholder="verify your password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary btn-block">Register</button>
+                </div>
+            </form>
+            <div class="form-note-s2 text-center pt-4"> Not a Student?
+                <a href="https://dashlite.net/demo3/pages/auths/auth-register-v2.html">Register as a Staff</a>
+            </div>
+            <div class="text-center pt-4 pb-3">
+                <h6 class="overline-title overline-title-sap"><span>OR</span></h6>
+            </div>
+            <ul class="nav justify-center gx-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="auth-login-v2.html#">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'home/plugins/vue/vue.js' %}"></script>
+    <script>
+        $(function(){
+            new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#studentReg',
+                data(){
+                    return {
+                        student: new StudentModel(),
+                        error: false,
+                        message: ''
+                    }
+                },
+                methods: {
+                    validate(){
+                        if(
+                            !this.student.fullName || !this.student.email || !this.student.phone ||
+                            !this.student.address || !this.student.faculty || !this.student.department ||
+                            !this.student.regNo || !this.student.password
+                        ){
+                            return this.displayError("All input fields should be completed")
+                        }
+                        if(this.student.level < 100){
+                            return this.displayError("Enter a valid level value")
+                        }
+                        if(this.student.password !== this.student.repassword){
+                            return this.displayError("Passwords do not match")
+                        }
+                        if(this.student.avatar === null){
+                            return this.displayError("Upload a passport image of yourself")
+                        }
+                        return this.$refs['studentForm'].submit()
+                    },
+                    attachAvatar(event){
+                        const file = event.target.files[0];
+                        this.student.avatar=file;
+                        const reader = new FileReader();
+                        reader.onload = (e)=>{
+                            $('#profile').attr('src', e.target.result)
+                        }
+                        reader.readAsDataURL(file)
+                    },
+                    displayError(message){
+                        this.error = true;
+                        this.message = message;
+                        $("html, body").animate({ scrollTop: "0" }, 1000);
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

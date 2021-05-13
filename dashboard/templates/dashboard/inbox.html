@@ -1,0 +1,169 @@
+{% extends 'dashboard/components/inboxContainer.html' %}
+{% load static %}
+{% block ibx-title %} Inbox {% endblock %}
+
+{% block ibx-view %}
+     <div id="inbox" class="nk-ibx-list" data-simplebar>
+            <div class="nk-ibx-item">
+                <a href="#" class="nk-ibx-link"></a>
+                <div class="nk-ibx-item-elem nk-ibx-item-check">
+                    <div class="custom-control custom-control-sm custom-checkbox"><input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionItem01"><label class="custom-control-label" for="conversionItem01"></label></div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-star">
+                    <div class="asterisk"><a href="javascript:void(0)"><em class="asterisk-off icon ni ni-star"></em><em class="asterisk-on icon ni ni-star-fill"></em></a></div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-user">
+                    <div class="user-card">
+                        <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/a-sm.jpg' %}" alt=""></div>
+                        <div class="user-name">
+                            <div class="lead-text">Abu Bin Ishtiyak</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-fluid">
+                    <div class="nk-ibx-context-group">
+                        <div class="nk-ibx-context"><span class="nk-ibx-context-text"><span class="heading">Can we help you set up email forwording?</span> We’ve noticed you haven’t set up email forward </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-attach"></div>
+                <div class="nk-ibx-item-elem nk-ibx-item-time">
+                    <div class="sub-text">10:00 AM</div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-tools">
+                    <div class="ibx-actions">
+                        <ul class="ibx-actions-hidden gx-1">
+                            <li><a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger" data-toggle="tooltip" data-placement="top" title="Archive"><em class="icon ni ni-archived"></em></a></li>
+                            <li><a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger" data-toggle="tooltip" data-placement="top" title="Delete"><em class="icon ni ni-trash"></em></a></li>
+                        </ul>
+                        <ul class="ibx-actions-visible gx-2">
+                            <li>
+                                <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle btn btn-sm btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-eye"></em><span>View</span></a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-trash"></em><span>Delete</span></a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-archived"></em><span>Archive</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nk-ibx-item is-unread"><a href="javascript:void(0)" class="nk-ibx-link"></a>
+                <div class="nk-ibx-item-elem nk-ibx-item-check">
+                    <div class="custom-control custom-control-sm custom-checkbox"><input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionItem02"><label class="custom-control-label" for="conversionItem02"></label></div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-star">
+                    <div class="asterisk"><a class="active" href="javascript:void(0)"><em class="asterisk-off icon ni ni-star"></em><em class="asterisk-on icon ni ni-star-fill"></em></a></div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-user">
+                    <div class="user-card">
+                        <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/b-sm.jpg' %}" alt=""></div>
+                        <div class="user-name">
+                            <div class="lead-text">Ricardo Salazar</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-fluid">
+                    <div class="nk-ibx-context-group">
+                        <div class="nk-ibx-context-badges"><span class="badge badge-primary">Feedback</span></div>
+                        <div class="nk-ibx-context"><span class="nk-ibx-context-text"><span class="heading">Can we help you set up email forwording?</span> We’ve noticed you haven’t set up email forward </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-attach"><a class="link link-light"><em class="icon ni ni-clip-h"></em></a></div>
+                <div class="nk-ibx-item-elem nk-ibx-item-time">
+                    <div class="sub-text">10:00 AM</div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-tools">
+                    <div class="ibx-actions">
+                        <ul class="ibx-actions-hidden gx-1">
+                            <li><a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger" data-toggle="tooltip" data-placement="top" title="Archive"><em class="icon ni ni-archived"></em></a></li>
+                            <li><a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger" data-toggle="tooltip" data-placement="top" title="Delete"><em class="icon ni ni-trash"></em></a></li>
+                        </ul>
+                        <ul class="ibx-actions-visible gx-2">
+                            <li>
+                                <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle btn btn-sm btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-eye"></em><span>View</span></a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-trash"></em><span>Delete</span></a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-archived"></em><span>Archive</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nk-ibx-item is-unread"><a href="javascript:void(0)" class="nk-ibx-link"></a>
+                <div class="nk-ibx-item-elem nk-ibx-item-check">
+                    <div class="custom-control custom-control-sm custom-checkbox"><input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionItem03"><label class="custom-control-label" for="conversionItem03"></label></div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-star">
+                    <div class="asterisk"><a href="javascript:void(0)"><em class="asterisk-off icon ni ni-star"></em><em class="asterisk-on icon ni ni-star-fill"></em></a></div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-user">
+                    <div class="user-card">
+                        <div class="user-avatar"><span>LH</span></div>
+                        <div class="user-name">
+                            <div class="lead-text">Larry Hughes</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-fluid">
+                    <div class="nk-ibx-context-group">
+                        <div class="nk-ibx-context"><span class="nk-ibx-context-text"><span class="heading">Individual Modal and Alert Design.</span> Please use the attached file for modal. </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-attach"></div>
+                <div class="nk-ibx-item-elem nk-ibx-item-time">
+                    <div class="sub-text">10:30 AM</div>
+                </div>
+                <div class="nk-ibx-item-elem nk-ibx-item-tools">
+                    <div class="ibx-actions">
+                        <ul class="ibx-actions-hidden gx-1">
+                            <li><a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger" data-toggle="tooltip" data-placement="top" title="Archive"><em class="icon ni ni-archived"></em></a></li>
+                            <li><a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger" data-toggle="tooltip" data-placement="top" title="Delete"><em class="icon ni ni-trash"></em></a></li>
+                        </ul>
+                        <ul class="ibx-actions-visible gx-2">
+                            <li>
+                                <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle btn btn-sm btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-eye"></em><span>View</span></a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-trash"></em><span>Delete</span></a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-archived"></em><span>Archive</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'home/plugins/vue/vue.js' %}"></script>
+    <script>
+        $(function(){
+            new Vue({
+                el: '#inbox',
+                data(){
+                    return {
+
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

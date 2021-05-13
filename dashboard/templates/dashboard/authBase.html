@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="" class="js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="{% static 'dashboard/images/favicon.png' %}">
+    <link rel="shortcut icon" href="{% static 'dashboard/images/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'dashboard/assets/css/dashlite.css@ver=2.4.0.css' %}">
+    <link id="skin-default" rel="stylesheet" href="{% static 'dashboard/assets/css/theme.css@ver=2.4.0.css' %}">
+    {% block link %}{% endblock %}
+    {% block style %}{% endblock %}
+    <title>SPAS | {% block title %}{% endblock %}</title>
+</head>
+<body class="nk-body npc-default pg-auth">
+<noscript>
+    <strong>We're sorry but SPAS doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+
+<div class="nk-app-root">
+    <div class="nk-main ">
+        <div class="nk-wrap nk-wrap-nosidebar">
+                <div class="nk-content ">
+                    <div class="nk-block nk-block-middle nk-auth-body  wide-xs">
+                        <div class="brand-logo pb-4 text-center">
+                            <a href="{% url 'home:index' %}" class="logo-link">
+                                <img class="logo-light logo-img logo-img-lg" src="{% static 'dashboard/images/spas.png' %}">
+                                <img class="logo-dark logo-img logo-img-lg" src="{% static 'dashboard/images/spas.png' %}" alt="logo-dark">
+                            </a>
+                        </div>
+                        {% block content %} {% endblock %}
+                </div>
+
+                <div class="nk-footer nk-auth-footer-full">
+                    <div class="container wide-lg">
+                        <div class="row g-3">
+                            <div class="col-lg-6 order-lg-last">
+                                <ul class="nav nav-sm justify-content-center justify-content-lg-end">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'home:index' %}">
+                                            UNN CS 2019/2020 Project
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="nk-block-content text-center text-lg-left">
+                                    <p class="text-soft">&copy; {% now "Y" %} SPAS. All Rights Reserved.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'dashboard/assets/js/bundle.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/scripts.js' %}"></script>
+<script src="{% static 'dashboard/assets/js/demo-settings.js' %}"></script>
+<script src="{% static 'dashboard/models/users.js' %}"></script>
+{% block script %}{% endblock %}
+</body>
+</html>
