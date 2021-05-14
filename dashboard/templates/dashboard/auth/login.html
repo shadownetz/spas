@@ -1,0 +1,98 @@
+{% extends 'dashboard/authBase.html' %}
+{% load static %}
+{% block title %} Staff Registration {% endblock %}
+
+
+{% block content %}
+    <div id="login" class="card card-bordered">
+        <div class="card-inner card-inner-lg">
+            <div class="nk-block-head">
+                <div class="nk-block-head-content">
+                    <h4 class="nk-block-title">Login</h4>
+                    <div class="nk-block-des">
+                        <p>Access the SPAS Panel using your email and password.</p>
+                    </div>
+                    {% if error %}
+                        <div class="alert alert-icon alert-danger" role="alert">
+                            <em class="icon ni ni-cross-circle"></em>
+                            <strong>Error</strong>.
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                    <div class="alert alert-icon alert-primary" role="alert" v-if="error">
+                        <em class="icon ni ni-alert-circle"></em>
+                        <strong>Warning</strong>.
+                        [[message]]
+                    </div>
+                </div>
+            </div>
+            <form @submit.prevent="validate" method="post" ref="loginForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label" for="default-01">Email</label>
+                    </div>
+                    <input type="text" v-model="email" name="email" class="form-control form-control-lg" id="default-01" placeholder="Enter your email address"></div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <label class="form-label" for="password">Password</label>
+                    </div>
+                    <div class="form-control-wrap">
+                        <input v-model="password" name="password" type="password" class="form-control form-control-lg" id="password" placeholder="********"></div>
+                </div>
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-lg btn-primary btn-block">Login</button>
+                </div>
+            </form>
+{#            <div class="form-note-s2 text-center pt-4"> New on our platform? <a href="https://dashlite.net/demo3/pages/auths/auth-register-v2.html">Create an account</a></div>#}
+            <div class="text-center pt-4 pb-3">
+                <h6 class="overline-title overline-title-sap"><span>Register as</span></h6>
+            </div>
+            <ul class="nav justify-center gx-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:register_student' %}">Student</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:register_staff' %}">Staff</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'home/plugins/vue/vue.js' %}"></script>
+    <script>
+        $(function(){
+            new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#login',
+                data(){
+                    return {
+                        error: false,
+                        message: '',
+                        email: '',
+                        password: ''
+                    }
+                },
+                methods: {
+                    validate(){
+                        if(!this.email){
+                            return this.displayError("Enter an email address")
+                        }
+                        if(!this.password){
+                            return this.displayError("Enter a valid password")
+                        }
+                        return this.$refs['loginForm'].submit()
+                    },
+                    displayError(message){
+                        this.error = true;
+                        this.message = message;
+                        $("html, body").animate({ scrollTop: "0" }, 1000);
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

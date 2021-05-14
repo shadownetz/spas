@@ -1,15 +1,24 @@
 from django.db import models
 # from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+import datetime
 
 
 def attachment_directory_path(instance, filename):
-    # file will be uploaded to media/messages/attachments/user_<email>/<filename>
-    return 'messages/attachments/{0}/{1}'.format(instance.sender.email, filename)
+    # file will be uploaded to media/messages/attachments/year/<filename>
+    return 'messages/attachments/{0}/{1}'.format(datetime.date.today().year, filename)
+
+
+GROUP_CONTEXTS = [
+    ('DEPARTMENT', 'Department'),
+    ('FACULTY', 'Faculty'),
+    ('LEVEL', 'Level'),
+]
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=20, blank=True)
+    title = models.CharField(max_length=50, blank=True)
+    context = models.CharField(max_length=50, blank=True, choices=GROUP_CONTEXTS)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='member_group')
     created_by = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,6 +40,7 @@ class Attachment(models.Model):
 
 class MessageThread(models.Model):
     content = models.TextField(max_length=2000, blank=True)
+    subject = models.CharField(max_length=100, blank=True)
     sender = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,  null=True)
     states = models.ManyToManyField(MessageState)
     attachments = models.ManyToManyField(Attachment)
@@ -45,6 +55,7 @@ class MessageThread(models.Model):
 
 class Message(models.Model):
     content = models.TextField(max_length=2000, blank=True)
+    subject = models.CharField(max_length=100, blank=True)
     sender = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,

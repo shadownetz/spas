@@ -11,3 +11,15 @@ function StudentModel(){
     this.repassword = '';
     this.avatar = null
 }
+
+function StaffModel(){
+    this.fullName = '';
+    this.email = '';
+    this.phone = '';
+    this.address = '';
+    this.role = '';
+    this.staffId = '';
+    this.password = '';
+    this.repassword = '';
+    this.avatar = null
+}

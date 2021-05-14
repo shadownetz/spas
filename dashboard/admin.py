@@ -5,12 +5,12 @@ from .models import (Group, MessageState, Attachment, MessageThread, Message)
 class GroupAdmin(admin.ModelAdmin):
     model = Group
     list_display = (
-        'id', 'title', 'created_by', 'created_at', 'updated_at',
+        'id', 'title', 'context', 'created_by', 'created_at', 'updated_at',
         'get_members'
     )
     fieldsets = (
         (None, {
-            'fields': ('title', 'members', 'created_by')
+            'fields': ('title', 'context', 'members', 'created_by')
         }),
     )
     ordering = ('created_at',)
@@ -39,17 +39,17 @@ class AttachmentAdmin(admin.ModelAdmin):
             'fields': ('file',)
         }),
     )
-    ordering = ('created_at',)
+    ordering = ('id',)
 
 
 class MessageThreadAdmin(admin.ModelAdmin):
     model = MessageThread
     list_display = (
-        'id', 'content', 'sender', 'get_message_states', 'get_attachments', 'created_at',
+        'id', 'content', 'subject', 'sender', 'get_message_states', 'get_attachments', 'created_at',
     )
     fieldsets = (
         (None, {
-            'fields': ('content', 'sender', 'states', 'attachments',)
+            'fields': ('content', 'subject', 'sender', 'states', 'attachments',)
         }),
     )
     ordering = ('created_at',)
@@ -58,14 +58,14 @@ class MessageThreadAdmin(admin.ModelAdmin):
 class MessageAdmin(admin.ModelAdmin):
     model = Message
     list_display = (
-        'id', 'content', 'sender',
+        'id', 'content', 'subject', 'sender',
         'get_receivers', 'get_message_states',
         'get_message_threads', 'group', 'get_attachments',
         'created_at',
     )
     fieldsets = (
         (None, {
-            'fields': ('content', 'sender', 'receivers', 'states', 'threads', 'group', 'attachments')
+            'fields': ('content', 'subject', 'sender', 'receivers', 'states', 'threads', 'group', 'attachments')
         }),
     )
     ordering = ('created_at',)

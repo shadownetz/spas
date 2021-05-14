@@ -1,6 +1,8 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block title %} {% block ibx-title %}{% endblock %} {% endblock %}
+{% block pageName %}{% block ibx-page-name %}{% endblock %}{% endblock %}
+{% block style %}{% block ibx-style %}{% endblock %}{% endblock %}
 
 {% block content %}
     <div class="nk-ibx">
@@ -8,24 +10,41 @@
         <div class="nk-ibx-aside" data-content="inbox-aside" data-toggle-overlay="true" data-toggle-screen="lg">
             <div class="nk-ibx-head">
                 <div class="mr-n1">
-                    <a href="javascript:void(0)" class="link link-text" data-toggle="modal" data-target="#compose-mail">
+                    <a href="{% url 'home:dashboard:inbox_new' %}" class="link link-text">
                         <em class="icon-circle icon ni ni-plus"></em>
-                        <span>Compose Mail</span>
+                        <span>Compose SMS</span>
                     </a>
                 </div>
             </div>
             <div class="nk-ibx-nav" data-simplebar>
                 <ul class="nk-ibx-menu">
-                    <li class="active"><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-inbox"></em><span class="nk-ibx-menu-text">Inbox</span><span class="badge badge-pill badge-primary">8</span></a></li>
-                    <li><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-edit"></em><span class="nk-ibx-menu-text">Draft</span><span class="badge badge-pill badge-light">12</span></a></li>
-                    <li><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-star"></em><span class="nk-ibx-menu-text">Favourite</span></a></li>
-                    <li><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-send"></em><span class="nk-ibx-menu-text">Sent</span></a></li>
-                    <li><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-report"></em><span class="nk-ibx-menu-text">Spam</span></a></li>
-                    <li><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-trash"></em><span class="nk-ibx-menu-text">Trash</span><span class="badge badge-pill badge-danger badge-dim">8</span></a></li>
-                    <li><a class="nk-ibx-menu-item" href="javascript:void(0)"><em class="icon ni ni-emails"></em><span class="nk-ibx-menu-text">All Mails</span></a></li>
+                    <li class="active">
+                        <a class="nk-ibx-menu-item" href="{% url 'home:dashboard:inbox' %}">
+                            <em class="icon ni ni-inbox"></em>
+                            <span class="nk-ibx-menu-text">Inbox</span>
+                            <span class="badge badge-pill badge-primary">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nk-ibx-menu-item" href="javascript:void(0)">
+                            <em class="icon ni ni-send"></em>
+                            <span class="nk-ibx-menu-text">Sent</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nk-ibx-menu-item" href="javascript:void(0)">
+                            <em class="icon ni ni-trash"></em>
+                            <span class="nk-ibx-menu-text">Trash</span>
+                            <span class="badge badge-pill badge-danger badge-dim">8</span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="nk-ibx-nav-head">
-                    <h6 class="title">Label</h6><a class="link" href="javascript:void(0)"><em class="icon ni ni-plus-c"></em></a></div>
+                    <h6 class="title">Groups</h6>
+                    <a class="link" href="javascript:void(0)">
+                        <em class="icon ni ni-plus-c"></em>
+                    </a>
+                </div>
                 <ul class="nk-ibx-label">
                     <li><a href="javascript:void(0)"><span class="nk-ibx-label-dot dot dot-xl dot-label bg-primary"></span><span class="nk-ibx-label-text">Business</span></a>
                         <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
@@ -79,209 +98,19 @@
                         </div>
                     </li>
                 </ul>
-                <div class="nk-ibx-nav-head">
-                    <h6 class="title">Contact</h6><a class="link" href="javascript:void(0)"><em class="icon ni ni-plus-c"></em></a></div>
-                <ul class="nk-ibx-contact">
-                    <li>
-                        <a href="javascript:void(0)">
-                            <div class="user-card">
-                                <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/a-sm.jpg' %}" alt=""></div>
-                                <div class="user-info"><span class="lead-text">Abu Bin Ishtiyak</span><span class="sub-text">CEO of Softnio</span></div>
-                            </div>
-                        </a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-xs dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>View Profile</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Send Email</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Start Chat</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <div class="user-card">
-                                <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/b-sm.jpg' %}" alt=""></div>
-                                <div class="user-info"><span class="lead-text">Dora Schmidt</span><span class="sub-text">VP Product Imagelab</span></div>
-                            </div>
-                        </a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-xs dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>View Profile</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Send Email</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Start Chat</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <div class="user-card">
-                                <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/c-sm.jpg' %}" alt=""></div>
-                                <div class="user-info"><span class="lead-text">Jessica Fowler</span><span class="sub-text">Developer at Softnio</span></div>
-                            </div>
-                        </a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-xs dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>View Profile</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Send Email</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Start Chat</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <div class="user-card">
-                                <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/d-sm.jpg' %}" alt=""></div>
-                                <div class="user-info"><span class="lead-text">Eula Flowers</span><span class="sub-text">Co-Founder of Vitzo</span></div>
-                            </div>
-                        </a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-xs dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>View Profile</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Send Email</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Start Chat</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
                 <div class="nk-ibx-status">
-                    <div class="nk-ibx-status-info"><em class="icon ni ni-hard-drive"></em><span><strong>6 GB</strong> (5%) of 100GB used</span></div>
-                    <div class="progress progress-md bg-light">
-                        <div class="progress-bar" data-progress="5"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Compose SMS -->
-        <div class="modal fade" tabindex="-1" role="dialog" id="compose-mail">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title">Compose Message</h6>
-                        <a href="#" class="close" data-dismiss="modal"><em class="icon ni ni-cross-sm"></em></a></div>
-                    <div class="modal-body p-0">
-                        <div class="nk-reply-form-header">
-                            <div class="nk-reply-form-group">
-                                <div class="nk-reply-form-input-group">
-                                    <div class="nk-reply-form-input nk-reply-form-input-to">
-                                        <label class="label">To</label>
-                                        <input type="text" class="input-mail tagify" placeholder="Recipient" data-whitelist="team@softnio.com, help@softnio.com, contact@softnio.com"></div>
-                                    <div class="nk-reply-form-input nk-reply-form-input-cc" data-content="mail-cc">
-                                        <label class="label">Cc</label>
-                                        <input type="text" class="input-mail tagify"><a href="#" class="toggle-opt" data-target="mail-cc"><em class="icon ni ni-cross"></em></a></div>
-                                    <div class="nk-reply-form-input nk-reply-form-input-bcc" data-content="mail-bcc">
-                                        <label class="label">Bcc</label>
-                                        <input type="text" class="input-mail tagify"><a href="#" class="toggle-opt" data-target="mail-bcc"><em class="icon ni ni-cross"></em></a></div>
-                                </div>
-                                <ul class="nk-reply-form-nav">
-                                    <li><a tabindex="-1" class="toggle-opt" data-target="mail-cc" href="#">CC</a></li>
-                                    <li><a tabindex="-1" class="toggle-opt" data-target="mail-bcc" href="#">BCC</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="nk-reply-form-editor">
-                            <div class="nk-reply-form-field">
-                                <input type="text" class="form-control form-control-simple" placeholder="Subject">
-                            </div>
-                            <div class="nk-reply-form-field">
-                                <textarea class="form-control form-control-simple no-resize ex-large" placeholder="Hello"></textarea>
-                            </div>
-                        </div>
-                        <div class="nk-reply-form-tools">
-                            <ul class="nk-reply-form-actions g-1">
-                                <li class="mr-2"><button class="btn btn-primary" type="submit">Send</button></li>
-                                <li>
-                                    <div class="dropdown"><a class="btn btn-icon btn-sm btn-tooltip" data-toggle="dropdown" title="Templates" href="#"><em class="icon ni ni-hash"></em></a>
-                                        <div class="dropdown-menu">
-                                            <ul class="link-list-opt no-bdr link-list-template">
-                                                <li class="opt-head"><span>Quick Insert</span></li>
-                                                <li><a href="#"><span>Thank you message</span></a></li>
-                                                <li><a href="#"><span>Your issues solved</span></a></li>
-                                                <li><a href="#"><span>Thank you message</span></a></li>
-                                                <li class="divider">
-                                                <li><a href="#"><em class="icon ni ni-file-plus"></em><span>Save as Template</span></a></li>
-                                                <li><a href="#"><em class="icon ni ni-notes-alt"></em><span>Manage Template</span></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li><a class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" title="Upload Attachment" href="#"><em class="icon ni ni-clip-v"></em></a></li>
-                                <li class="d-none d-sm-block"><a class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" title="Insert Emoji" href="#"><em class="icon ni ni-happy"></em></a></li>
-                                <li class="d-none d-sm-block"><a class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" title="Upload Images" href="#"><em class="icon ni ni-img"></em></a></li>
-                            </ul>
-                            <ul class="nk-reply-form-actions g-1">
-                                <li>
-                                    <div class="dropdown"><a href="#" class="dropdown-toggle btn-trigger btn btn-icon" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <ul class="link-list-opt no-bdr">
-                                                <li><a href="#"><span>Another Option</span></a></li>
-                                                <li><a href="#"><span>More Option</span></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li><a href="#" class="btn-trigger btn btn-icon mr-n2"><em class="icon ni ni-trash"></em></a></li>
-                            </ul>
-                        </div>
+                    <div class="nk-ibx-status-info">
+                        <em class="icon ni ni-hard-drive"></em>
+                        <span>&copy;{% now 'Y' %} SPAS Portal</span>
                     </div>
                 </div>
             </div>
         </div>
         <!-- End of side navigation -->
-        <div class="nk-ibx-body bg-white">
-            <!-- Top Navigation -->
-            <div class="nk-ibx-head">
-                <div class="nk-ibx-head-actions">
-                    <div class="nk-ibx-head-check">
-                        <div class="custom-control custom-control-sm custom-checkbox"><input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionAll"><label class="custom-control-label" for="conversionAll"></label></div>
-                    </div>
-                    <ul class="nk-ibx-head-tools g-1">
-                        <li><a href="javascript:void(0)" class="btn btn-icon btn-trigger"><em class="icon ni ni-undo"></em></a></li>
-                        <li class="d-none d-sm-block"><a href="javascript:void(0)" class="btn btn-icon btn-trigger"><em class="icon ni ni-archived"></em></a></li>
-                        <li class="d-none d-sm-block"><a href="javascript:void(0)" class="btn btn-icon btn-trigger"><em class="icon ni ni-trash"></em></a></li>
-                        <li>
-                            <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                                <div class="dropdown-menu">
-                                    <ul class="link-list-opt no-bdr">
-                                        <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-eye"></em><span>Move to</span></a></li>
-                                        <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-trash"></em><span>Delete</span></a></li>
-                                        <li><a class="dropdown-item" href="javascript:void(0)"><em class="icon ni ni-archived"></em><span>Archive</span></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <ul class="nk-ibx-head-tools g-1">
-                        <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon btn-tooltip" title="Prev Page"><em class="icon ni ni-arrow-left"></em></a></li>
-                        <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon btn-tooltip" title="Next Page"><em class="icon ni ni-arrow-right"></em></a></li>
-                        <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon search-toggle toggle-search" data-target="search"><em class="icon ni ni-search"></em></a></li>
-                        <li class="mr-n1 d-lg-none"><a href="javascript:void(0)" class="btn btn-trigger btn-icon toggle" data-target="inbox-aside"><em class="icon ni ni-menu-alt-r"></em></a></li>
-                    </ul>
-                </div>
-                <div class="search-wrap" data-search="search">
-                    <div class="search-content">
-                        <a href="javascript:void(0)" class="search-back btn btn-icon toggle-search" data-target="search">
-                            <em class="icon ni ni-arrow-left"></em>
-                        </a>
-                        <input type="text" class="form-control border-transparent form-focus-none" placeholder="Search by user or message">
-                        <button class="search-submit btn btn-icon">
-                            <em class="icon ni ni-search"></em>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- End Top Navigation-->
 
+        <div class="nk-ibx-body bg-white">
             {% block ibx-view %}{% endblock %}
         </div>
+
     </div>
 {% endblock %}

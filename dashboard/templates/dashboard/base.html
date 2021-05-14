@@ -12,6 +12,20 @@
     {% block link %}{% endblock %}
     {% block style %}{% endblock %}
     <title>SPAS | {% block title %}{% endblock %}</title>
+
+    <style>
+        .user-avatar-custom{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: transparent;
+        }
+        .avatar{
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body class="nk-body npc-apps apps-only has-apps-sidebar npc-apps-inbox">
 <noscript>
@@ -20,11 +34,11 @@
 
 <div class="nk-app-root">
     <!-- Side Nav -->
-    <div class="nk-apps-sidebar is-theme">
+    <div class="nk-apps-sidebar">
         <div class="nk-apps-brand">
             <a href="#" class="logo-link">
-                <img class="logo-light logo-img" src="{% static 'dashboard/images/logo-small.png' %}" srcset="{% static 'dashboard/images/logo-small2x.png' %}" alt="logo">
-                <img class="logo-dark logo-img" src="{% static 'dashboard/images/logo-dark-small.png'%}" srcset="{% static 'dashboard/images/logo-dark-small2x.png' %}" alt="logo-dark">
+                <img class="logo-light logo-img" src="{% static 'dashboard/images/spas_logo_light.png' %}" srcset="{% static 'dashboard/images/spas_logo_light.png' %}" alt="logo">
+                <img class="logo-dark logo-img" src="{% static 'dashboard/images/spas_logo.png'%}" srcset="{% static 'dashboard/images/spas_logo.png' %}" alt="logo-dark">
             </a>
         </div>
         <div class="nk-sidebar-element">
@@ -32,19 +46,32 @@
                 <div class="nk-sidebar-content" data-simplebar>
                     <div class="nk-sidebar-menu">
                         <ul class="nk-menu apps-menu">
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Analytics Dashboard"><span class="nk-menu-icon"><em class="icon ni ni-dashboard"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Sales Dashboard"><span class="nk-menu-icon"><em class="icon ni ni-speed"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Crypto Dashboard"><span class="nk-menu-icon"><em class="icon ni ni-bitcoin-cash"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Invest Dashboard"><span class="nk-menu-icon"><em class="icon ni ni-invest"></em></span></a></li>
+                            <li class="nk-menu-item">
+                                <a href="{% url 'home:dashboard:index' %}" class="nk-menu-link" title="Dashboard">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-dashboard"></em></span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="{% url 'home:dashboard:inbox' %}" class="nk-menu-link" title="Mailbox">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-inbox"></em></span>
+                                </a>
+                            </li>
                             <li class="nk-menu-hr"></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Mailbox"><span class="nk-menu-icon"><em class="icon ni ni-inbox"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Messages"><span class="nk-menu-icon"><em class="icon ni ni-chat"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="File Manager"><span class="nk-menu-icon"><em class="icon ni ni-folder"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Chats"><span class="nk-menu-icon"><em class="icon ni ni-chat-circle"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Calendar"><span class="nk-menu-icon"><em class="icon ni ni-calendar"></em></span></a></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link"><span class="nk-menu-icon"><em class="icon ni ni-template"></em></span></a></li>
-                            <li class="nk-menu-hr"></li>
-                            <li class="nk-menu-item"><a href="javascript:void(0)" class="nk-menu-link" title="Go to Components"><span class="nk-menu-icon"><em class="icon ni ni-layers"></em></span></a></li>
+                            <li class="nk-menu-item">
+                                <a href="javascript:void(0)" class="nk-menu-link" title="Message Groups">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-template"></em></span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="javascript:void(0)" class="nk-menu-link" title="Students">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="javascript:void(0)" class="nk-menu-link" title="Staffs">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-user-list"></em></span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                     <div class="nk-sidebar-footer">
@@ -61,25 +88,37 @@
                 </div>
                 <div class="nk-sidebar-profile nk-sidebar-profile-fixed dropdown">
                     <a href="javascript:void(0)" data-toggle="dropdown" data-offset="50,-60">
-                        <div class="user-avatar"><span>AB</span></div>
+                        <div class="user-avatar">
+                            <div class="user-avatar user-avatar-custom">
+                                <img class="avatar" src="{{ request.user.avatar.url }}" alt="user image">
+                            </div>
+                        </div>
                     </a>
                     <div class="dropdown-menu dropdown-menu-md ml-4">
                         <div class="dropdown-inner user-card-wrap d-none d-md-block">
                             <div class="user-card">
-                                <div class="user-avatar"><span>AB</span></div>
-                                <div class="user-info"><span class="lead-text">Abu Bin Ishtiyak</span><span class="sub-text text-soft">info@softnio.com</span></div>
+                                <div class="user-avatar user-avatar-custom">
+                                    <img class="avatar" src="{{ request.user.avatar.url }}" alt="user image">
+                                </div>
+                                <div class="user-info">
+                                    <span class="lead-text">{{ request.user.name }}</span>
+                                    <span class="sub-text text-soft">{{ request.user.email }}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="dropdown-inner">
                             <ul class="link-list">
                                 <li><a href="javascript:void(0)"><em class="icon ni ni-user-alt"></em><span>View Profile</span></a></li>
-                                <li><a href="javascript:void(0)"><em class="icon ni ni-setting-alt"></em><span>Account Setting</span></a></li>
-                                <li><a href="javascript:void(0)"><em class="icon ni ni-activity-alt"></em><span>Login Activity</span></a></li>
+                                <li><a href="javascript:void(0)"><em class="icon ni ni-setting-alt"></em><span>Update Profile</span></a></li>
                             </ul>
                         </div>
                         <div class="dropdown-inner">
                             <ul class="link-list">
-                                <li><a href="javascript:void(0)"><em class="icon ni ni-signout"></em><span>Sign out</span></a></li>
+                                <li>
+                                    <a href="{% url 'home:dashboard:signout' %}">
+                                        <em class="icon ni ni-signout"></em><span>Sign out</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -100,104 +139,12 @@
                         <div class="nk-header-app-name">
                             <div class="nk-header-app-logo"><em class="icon ni ni-inbox bg-purple-dim"></em></div>
                             <div class="nk-header-app-info">
-                                <span class="sub-text">Inbox</span>
-                                <span class="lead-text">Inbox Page</span>
+                                <span class="sub-text">SPAS</span>
+                                <span class="lead-text">{% block pageName %}{% endblock %}</span>
                             </div>
                         </div>
                         <div class="nk-header-tools">
                             <ul class="nk-quick-nav">
-                                <li class="dropdown chats-dropdown hide-mb-xs">
-                                    <a href="javascript:void(0)" class="dropdown-toggle nk-quick-nav-icon" data-toggle="dropdown">
-                                        <div class="icon-status icon-status-na"><em class="icon ni ni-comments"></em></div>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right">
-                                        <div class="dropdown-head"><span class="sub-title nk-dropdown-title">Recent Chats</span><a href="javascript:void(0)">Setting</a></div>
-                                        <div class="dropdown-body">
-                                            <ul class="chat-list">
-                                                <li class="chat-item">
-                                                    <a class="chat-link" href="javascript:void(0)">
-                                                        <div class="chat-media user-avatar"><span>IH</span><span class="status dot dot-lg dot-gray"></span></div>
-                                                        <div class="chat-info">
-                                                            <div class="chat-from">
-                                                                <div class="name">Iliash Hossain</div><span class="time">Now</span></div>
-                                                            <div class="chat-context">
-                                                                <div class="text">You: Please confrim if you got my last messages.</div>
-                                                                <div class="status delivered"><em class="icon ni ni-check-circle-fill"></em></div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="chat-item is-unread">
-                                                    <a class="chat-link" href="javascript:void(0)">
-                                                        <div class="chat-media user-avatar bg-pink"><span>AB</span><span class="status dot dot-lg dot-success"></span></div>
-                                                        <div class="chat-info">
-                                                            <div class="chat-from">
-                                                                <div class="name">Abu Bin Ishtiyak</div><span class="time">4:49 AM</span></div>
-                                                            <div class="chat-context">
-                                                                <div class="text">Hi, I am Ishtiyak, can you help me with this problem ?</div>
-                                                                <div class="status unread"><em class="icon ni ni-bullet-fill"></em></div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="chat-item">
-                                                    <a class="chat-link" href="javascript:void(0)">
-                                                        <div class="chat-media user-avatar"><img src="{% static 'dashboard/images/avatar/b-sm.jpg' %}" alt=""></div>
-                                                        <div class="chat-info">
-                                                            <div class="chat-from">
-                                                                <div class="name">George Philips</div><span class="time">6 Apr</span></div>
-                                                            <div class="chat-context">
-                                                                <div class="text">Have you seens the claim from Rose?</div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="chat-item">
-                                                    <a class="chat-link" href="javascript:void(0)">
-                                                        <div class="chat-media user-avatar user-avatar-multiple">
-                                                            <div class="user-avatar"><img src="{% static 'dashboard/images/avatar/c-sm.jpg' %}" alt=""></div>
-                                                            <div class="user-avatar"><span>AB</span></div>
-                                                        </div>
-                                                        <div class="chat-info">
-                                                            <div class="chat-from">
-                                                                <div class="name">Softnio Group</div><span class="time">27 Mar</span></div>
-                                                            <div class="chat-context">
-                                                                <div class="text">You: I just bought a new computer but i am having some problem</div>
-                                                                <div class="status sent"><em class="icon ni ni-check-circle"></em></div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="chat-item">
-                                                    <a class="chat-link" href="javascript:void(0)">
-                                                        <div class="chat-media user-avatar"><img src="{% static 'dashboard/images/avatar/a-sm.jpg' %}" alt=""><span class="status dot dot-lg dot-success"></span></div>
-                                                        <div class="chat-info">
-                                                            <div class="chat-from">
-                                                                <div class="name">Larry Hughes</div><span class="time">3 Apr</span></div>
-                                                            <div class="chat-context">
-                                                                <div class="text">Hi Frank! How is you doing?</div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                                <li class="chat-item">
-                                                    <a class="chat-link" href="javascript:void(0)">
-                                                        <div class="chat-media user-avatar bg-purple"><span>TW</span></div>
-                                                        <div class="chat-info">
-                                                            <div class="chat-from">
-                                                                <div class="name">Tammy Wilson</div><span class="time">27 Mar</span></div>
-                                                            <div class="chat-context">
-                                                                <div class="text">You: I just bought a new computer but i am having some problem</div>
-                                                                <div class="status sent"><em class="icon ni ni-check-circle"></em></div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="dropdown-foot center"><a href="https://dashlite.net/demo3/javascript:void(0)">View All</a></div>
-                                    </div>
-                                </li>
                                 <li class="dropdown notification-dropdown">
                                     <a href="javascript:void(0)" class="dropdown-toggle nk-quick-nav-icon" data-toggle="dropdown">
                                         <div class="icon-status icon-status-info"><em class="icon ni ni-bell"></em></div>
@@ -239,52 +186,39 @@
                                         <div class="dropdown-foot center"><a href="javascript:void(0)">View All</a></div>
                                     </div>
                                 </li>
-                                <li class="dropdown list-apps-dropdown d-lg-none">
-                                    <a href="javascript:void(0)" class="dropdown-toggle nk-quick-nav-icon" data-toggle="dropdown">
-                                        <div class="icon-status icon-status-na"><em class="icon ni ni-menu-circled"></em></div>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                                        <div class="dropdown-body">
-                                            <ul class="list-apps">
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-dashlite bg-primary text-white"></em></span><span class="list-apps-title">Dashboard</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-chat-circle bg-info-dim"></em></span><span class="list-apps-title">Chats</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-inbox bg-purple-dim"></em></span><span class="list-apps-title">Mailbox</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-chat bg-success-dim"></em></span><span class="list-apps-title">Messages</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-folder bg-purple-dim"></em></span><span class="list-apps-title">File Manager</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-layers bg-secondary-dim"></em></span><span class="list-apps-title">Components</span></a></li>
-                                            </ul>
-                                            <ul class="list-apps">
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-cart bg-danger-dim"></em></span><span class="list-apps-title">Ecommerce Panel</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-calendar-booking bg-primary-dim"></em></span><span class="list-apps-title">Subscription Panel</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-bitcoin-cash bg-warning-dim"></em></span><span class="list-apps-title">Crypto Wallet Panel</span></a></li>
-                                                <li><a href="javascript:void(0)"><span class="list-apps-media"><em class="icon ni ni-invest bg-blue-dim"></em></span><span class="list-apps-title">HYIP Invest Panel</span></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </li>
                                 <li class="dropdown user-dropdown">
                                     <a href="javascript:void(0)" class="dropdown-toggle mr-n1" data-toggle="dropdown">
                                         <div class="user-toggle">
-                                            <div class="user-avatar sm"><em class="icon ni ni-user-alt"></em></div>
+                                            <div class="user-avatar user-avatar-custom">
+                                                <img class="avatar" src="{{ request.user.avatar.url }}" alt="user image">
+                                            </div>
                                         </div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
                                         <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
                                             <div class="user-card">
-                                                <div class="user-avatar"><span>AB</span></div>
-                                                <div class="user-info"><span class="lead-text">Abu Bin Ishtiyak</span><span class="sub-text">info@softnio.com</span></div>
+                                                <div class="user-avatar user-avatar-custom">
+                                                    <img class="avatar" src="{{ request.user.avatar.url }}" alt="user image">
+                                                </div>
+                                                <div class="user-info">
+                                                    <span class="lead-text">{{ request.user.name }}</span>
+                                                    <span class="sub-text">{{ request.user.email }}</span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="dropdown-inner">
                                             <ul class="link-list">
                                                 <li><a href="javascript:void(0)"><em class="icon ni ni-user-alt"></em><span>View Profile</span></a></li>
-                                                <li><a href="javascript:void(0)"><em class="icon ni ni-setting-alt"></em><span>Account Setting</span></a></li>
-                                                <li><a href="javascript:void(0)"><em class="icon ni ni-activity-alt"></em><span>Login Activity</span></a></li>
+                                                <li><a href="javascript:void(0)"><em class="icon ni ni-setting-alt"></em><span>Update Profile</span></a></li>
                                             </ul>
                                         </div>
                                         <div class="dropdown-inner">
                                             <ul class="link-list">
-                                                <li><a href="javascript:void(0)"><em class="icon ni ni-signout"></em><span>Sign out</span></a></li>
+                                                <li>
+                                                    <a href="{% url 'home:dashboard:signout' %}">
+                                                        <em class="icon ni ni-signout"></em><span>Sign out</span>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -308,11 +242,20 @@
     </div>
 </div>
 
+<input type="hidden" id="upload-attach" value="{% url 'home:dashboard:upload_attach' %}">
+
 <script src="{% static 'dashboard/assets/js/bundle.js' %}"></script>
 <script src="{% static 'dashboard/assets/js/scripts.js' %}"></script>
 <script src="{% static 'dashboard/assets/js/demo-settings.js' %}"></script>
 <script src="{% static 'dashboard/assets/js/apps/inbox.js' %}"></script>
 <script src="{% static 'dashboard/assets/js/libs/tagify.js' %}"></script>
+<script src="{% static 'dashboard/custom-js/csrf_ajax.js' %}"></script>
+<script src="{% static 'dashboard/custom-js/modules.js' %}"></script>
+<script>
+    $(function(){
+        $('.nk-apps-sidebar').addClass('is-theme')
+    })
+</script>
 {% block script %}{% endblock %}
 </body>
 </html>

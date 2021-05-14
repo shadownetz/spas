@@ -338,9 +338,10 @@ function _typeof(obj) {
       return !value || "default" === value ? "theme" : "theme-" + value;
     },
     defs : function(name) {
-      var value = self.Demo.apps();
-      value = map[value][name] || "";
-      return self.Demo.current(name) ? self.Demo.current(name) : value;
+      // var value = self.Demo.apps();
+      // value = map[value][name] || "";
+      // return self.Demo.current(name) ? self.Demo.current(name) : value;
+      return self.Demo.current(name)
     },
     apply : function() {
       self.Demo.apps();
