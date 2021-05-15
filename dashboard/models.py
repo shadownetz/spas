@@ -69,10 +69,16 @@ class Message(models.Model):
     )
     receivers = models.ManyToManyField(settings.AUTH_USER_MODEL)
     states = models.ManyToManyField(MessageState)
-    threads = models.ManyToManyField(MessageThread)
+    threads = models.ManyToManyField(MessageThread, blank=True)
     group = models.ForeignKey(to=Group, on_delete=models.SET_NULL, null=True)
-    attachments = models.ManyToManyField(Attachment)
+    attachments = models.ManyToManyField(Attachment, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_message_state(self, user):
+        return self.states.get(user=user).read
+
+    def has_attachments(self):
+        return self.attachments.all().count() > 0
 
     def get_receivers(self):
         return "\n".join([r.email for r in self.receivers.all()])

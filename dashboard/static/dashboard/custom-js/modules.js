@@ -88,3 +88,84 @@ class Attachment{
         `
     }
 }
+
+class Inbox{
+    constructor(userId){
+        this.userID = $('#usr-id');
+        this.fetchInboxURL = $('#fetch-inbox-url')
+    }
+
+    async fetchInbox(){
+        let response = {
+            inbox: [],
+        };
+        try{
+            response = await $.ajax({
+                url: this.fetchInboxURL.val(),
+                type: 'POST',
+                data: {
+                    userId: this.userID.val()
+                },
+                dataType: 'json',
+            });
+        }catch (e) {
+            console.log('Error while fetching inbox:', e)
+        }
+        return Promise.resolve(response)
+    }
+}
+
+const VueMethodMixins = {
+    methods: {
+        testEmailRegExp(email){
+            return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)
+        },
+        todaysDate(){
+            let _date = new Date();
+            return _date.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+        },
+        getReadableDate(store_timestamp){
+            if(store_timestamp){
+                let _date = new Date(0);
+                _date.setSeconds(store_timestamp.seconds);
+                if(_date.getTime() === _date.getTime())
+                    return _date.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+            }
+            return 'No Date'
+        },
+        getReadableTime(timestamp){
+            let date = new Date(timestamp);
+            if(date.getTime() === date.getTime())
+                return date.toLocaleString(undefined, { hour: 'numeric', minute: 'numeric', hour12: true })
+        },
+        getReadableDatetime(store_timestamp){
+            if(store_timestamp){
+                let _date = new Date(0);
+                _date.setSeconds(store_timestamp.seconds);
+                if(_date.getTime() === _date.getTime())
+                    return _date.toLocaleString(undefined, {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true,
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })
+            }
+            return 'No DateTime'
+        }
+    }
+};
+
+function UserMessageUIModel(){
+    this.is_staff = false;
+    this.avatar = '';
+    this.name = '';
+    this.is_read = false;
+    this.subject = '';
+    this.content = '';
+    this.has_attachments = false;
+    this.timestamp = new Date();
+    this.messageId = ''
+}

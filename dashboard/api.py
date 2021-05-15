@@ -1,8 +1,9 @@
 import base64
 from django.core.files.base import ContentFile
 from django.core.files import File
-from .models import Attachment
+from .models import (Attachment, Message)
 from django.http import JsonResponse
+from home.models import User
 
 
 def upload_attachment(request):
@@ -24,5 +25,32 @@ def delete_attachment(request):
         try:
             Attachment.objects.get(pk=int(file_id)).delete()
         except Attachment.DoesNotExist:
+            pass
+    return JsonResponse(data=response)
+
+
+def get_user_inbox(request):
+    response = {
+        'inbox': [],
+        'status': True
+    }
+    if request.method == 'POST':
+        user_id = request.POST['userId']
+        try:
+            user = User.objects.get(pk=int(user_id))
+            user_inboxes = Message.objects.filter(receivers=user)
+            for inbox in user_inboxes:
+                response['inbox'].append({
+                    'is_staff': inbox.sender.is_staff,
+                    'avatar': inbox.sender.avatar.url,
+                    'name': inbox.sender.name,
+                    'is_read': inbox.get_message_state(user),
+                    'subject': inbox.subject,
+                    'content': inbox.content,
+                    'has_attachments': inbox.has_attachments(),
+                    'timestamp': inbox.created_at,
+                    'messageId': inbox.id
+                })
+        except User.DoesNotExist:
             pass
     return JsonResponse(data=response)
