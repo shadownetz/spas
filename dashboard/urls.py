@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .api import upload_attachment
+from .api import (upload_attachment, delete_attachment)
 
 app_name = 'dashboard'
 
@@ -11,5 +11,6 @@ urlpatterns = [
     path('inbox/content', inbox_content, name='inbox_content'),
     path('logout', signout, name='signout'),
 
-    path('api/attachment/upload', upload_attachment, name='upload_attach')
+    path('api/attachment/upload', upload_attachment, name='upload_attach'),
+    path('api/attachment/delete', delete_attachment, name='delete_attach')
 ]

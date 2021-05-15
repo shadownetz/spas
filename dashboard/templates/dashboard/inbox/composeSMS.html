@@ -2,6 +2,10 @@
 {% load static %}
 {% block ibx-title %} Compose SMS {% endblock %}
 {% block ibx-page-name %} Compose SMS {% endblock %}
+{% block ibx-link %}
+    <link rel="stylesheet" href="{% static 'dashboard/assets/css/editors/summernote.css@ver=2.4.0.css' %}">
+{% endblock %}
+
 {% block ibx-style %}
     <style>
         #sms-attcmts{
@@ -13,12 +17,16 @@
             height: 100%;
             z-index:5
         }
+        .nk-reply-form-editor{
+            max-height: 450px;
+            overflow: hidden auto;
+        }
     </style>
 {% endblock %}
 
 {% block ibx-view %}
     <div id="composeSMS" class="nk-ibx-list" data-simplebar>
-        <form method="post" enctype="multipart/form-data" id="smsForm">
+        <form method="post" id="smsForm">
             {% csrf_token %}
             <div class="nk-reply-form-header">
                 <div class="nk-reply-form-group">
@@ -88,19 +96,28 @@
                 <div class="nk-reply-form-field">
                     <input type="text" id="subject" name="subject" class="form-control form-control-simple" placeholder="Subject">
                 </div>
+                <div class="nk-reply-form-field px-2">
+                    <div class="summernote-minimal"></div>
+                    <input type="hidden" name="content" id="content">
+                </div>
                 <div class="nk-reply-form-field">
-                    <textarea name="content" id="content" class="form-control form-control-simple no-resize ex-large" placeholder="Start typing..." rows="18"></textarea>
+                    <div class="nk-files nk-files-view-group">
+                        <div class="nk-files-group">
+                            <div id="attach-files-list" class="nk-files-list"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="nk-reply-form-tools">
                 <ul class="nk-reply-form-actions g-1">
                     <input type="hidden" name="sendToContext" id="sendContext">
+                    <input type="hidden" name="attachments" id="attachmentsInput">
                     <li class="mr-2">
                         <button class="btn btn-primary" type="submit">Send</button>
                     </li>
                     <li>
                         <label class="btn btn-icon btn-sm m-0" data-toggle="tooltip" data-placement="top" title="Upload Attachment" href="#">
-                            <input type="file" name="attachments" id="sms-attcmts" accept="*/*" multiple>
+                            <input type="file" id="sms-attcmts" accept="*/*" multiple>
                             <em class="icon ni ni-clip-v"></em>
                         </label>
                     </li>
@@ -136,6 +153,8 @@
 {% endblock %}
 
 {% block script %}
+    <script src="{% static 'dashboard/assets/js/libs/editors/summernote.js@ver=2.4.0' %}"></script>
+    <script src="{% static 'dashboard/assets/js/editors.js@ver=2.4.0' %}"></script>
     <script>
         let toggleOptionElem = $('.toggle-opt');
         const sendToElem = $('.nk-reply-form-input-to');
@@ -145,9 +164,11 @@
         const subject = $('#subject');
         const to = $('#to');
         const group = $('#group');
-        const content = $('#content');
+        const content = $('.summernote-minimal');
         const attachment = $('#sms-attcmts');
+        const attachmentBlock = $('#attach-files-list');
         let send_message_as = 'email';
+        let attachmentsRef = [];
 
         toggleOptionElem.on('click', function(event){
             if($(this).attr('data-target') === 'mail-cc'){
@@ -167,20 +188,42 @@
             const files = event.target.files;
             const new_attachment = new Attachment(files);
             let ids = await new_attachment.uploadAttachments();
-            console.log('File ids:', ids)
+            for(let i=0; i<files.length; i++){
+                attachmentBlock.append(
+                    Attachment.getAttachmentUI(
+                        files[i].name,
+                        (files[i].size/(1024*1024)).toFixed(2),
+                        ids[i].id
+                    )
+                );
+                $(`#attach-del-${ids[i].id}`).on('click', async()=>{
+                    await new_attachment.deleteAttachment(ids[i].id);
+                    $(`#file-item-${ids[i].id}`).remove();
+                    attachmentsRef.splice(attachmentsRef.indexOf(ids[i].id), 1);
+                })
+            }
+            attachmentsRef = attachmentsRef.concat(ids.map(id=>id.id));
         });
         smsForm.on('submit', function(event){
             event.preventDefault();
             let sendTo = to.val();
             const messagegroup = group.val();
             const messageSubj = subject.val();
-            const messageContent = content.val();
-            if(sendTo && messagegroup && messageSubj && messageContent){
+            const messageContent = content.summernote('code');
+            if(send_message_as === 'email' && !sendTo){
+                return
+            }
+            if(sendTo){
                 sendTo = JSON.parse(sendTo).map(to=>to.value).join(',');
                 to.val(sendTo);
+            }
+            if(messageSubj && !content.summernote('isEmpty')){
+                $('#content').val(messageContent);
                 $('#sendContext').val(send_message_as);
+                $('#attachmentsInput').val(attachmentsRef.join(','));
                 $(this)[0].submit()
             }
-        })
+        });
+
     </script>
 {% endblock %}

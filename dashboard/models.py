@@ -2,6 +2,8 @@ from django.db import models
 # from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 import datetime
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
 
 
 def attachment_directory_path(instance, filename):
@@ -31,6 +33,9 @@ class Group(models.Model):
 class MessageState(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.name+'_msg_state'
 
 
 class Attachment(models.Model):
@@ -70,13 +75,33 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_receivers(self):
-        return "\n".join([r for r in self.receivers.all()])
+        return "\n".join([r.email for r in self.receivers.all()])
 
     def get_message_states(self):
-        return "\n".join([s for s in self.states.all()])
+        return "\n".join([s.user.name+'_msg_state' for s in self.states.all()])
 
     def get_message_threads(self):
-        return "\n".join([t for t in self.threads.all()])
+        return "\n".join(['thread_{0}'.format(t.id) for t in self.threads.all()])
 
     def get_attachments(self):
-        return "\n".join([a for a in self.attachments.all()])
+        return "\n".join(['attach_{0}'.format(a.id) for a in self.attachments.all()])
+
+
+@receiver(pre_delete, sender=Message)
+def delete_message_state(sender, instance, **kwargs):
+    message_states = instance.states.all()
+    message_attachments = instance.attachments.all()
+    for msg_state in message_states:
+        msg_state.delete()
+    for msg_attachment in message_attachments:
+        msg_attachment.delete()
+
+
+@receiver(pre_delete, sender=Message)
+def delete_message_thread_state(sender, instance, **kwargs):
+    message_states = instance.states.all()
+    message_attachments = instance.attachments.all()
+    for msg_state in message_states:
+        msg_state.delete()
+    for msg_attachment in message_attachments:
+        msg_attachment.delete()

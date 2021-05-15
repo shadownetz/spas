@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from home.models import User, StudentProfile, StaffProfile
-from .models import (Group)
+from .models import (Group, Message, MessageState, Attachment)
 from django.db import IntegrityError
 from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
-from .forms import MessageForm
+# from .forms import MessageForm
 
 
 @login_required
@@ -164,6 +164,46 @@ def inbox(request):
 
 @login_required
 def inbox_create(request):
+    if request.method == 'POST':
+        send_to = request.POST['to'].split(',')    # [email,email,email]
+        group_id = request.POST['group']   # group id
+        subject = request.POST['subject']
+        content = request.POST['content']
+        send_to_context = request.POST['sendToContext']     # email or group
+        attachment_ids = request.POST['attachments'].split(',')
+
+        new_message = Message(content=content, subject=subject, sender=request.user)
+        new_message.save()
+        if send_to_context == 'email':
+            for user_email in send_to:
+                if user_email:
+                    try:
+                        user = User.objects.get(email=user_email)
+                        new_message.receivers.add(user)
+                        new_message.states.add(MessageState.objects.create(user=user))
+                    except User.DoesNotExist:
+                        pass
+                else:
+                    continue
+        elif send_to_context == 'group':
+            try:
+                group = Group.objects.get(pk=int(group_id))
+                new_message.group = group
+                for user in group.members.all():
+                    new_message.states.add(MessageState.objects.create(user=user))
+            except Group.DoesNotExist:
+                pass
+        for attachment_id in attachment_ids:
+            if attachment_id:
+                try:
+                    attachment = Attachment.objects.get(pk=int(attachment_id))
+                    new_message.attachments.add(attachment)
+                except Attachment.DoesNotExist:
+                    pass
+            else:
+                continue
+        new_message.save()
+        return redirect('home:dashboard:inbox')
     users = User.objects.filter(is_superuser=False)
     groups = Group.objects.all()
     user_custom_groups = groups.filter(created_by=request.user)

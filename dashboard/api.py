@@ -15,3 +15,14 @@ def upload_attachment(request):
         new_attachment = Attachment.objects.create(file=File(content_file))
         response['id'] = new_attachment.id
     return JsonResponse(data=response)
+
+
+def delete_attachment(request):
+    response = {'status': True}
+    if request.method == 'POST':
+        file_id = request.POST['id']
+        try:
+            Attachment.objects.get(pk=int(file_id)).delete()
+        except Attachment.DoesNotExist:
+            pass
+    return JsonResponse(data=response)
