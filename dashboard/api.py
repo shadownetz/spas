@@ -1,7 +1,7 @@
 import base64
 from django.core.files.base import ContentFile
 from django.core.files import File
-from .models import (Attachment, Message)
+from .models import (Attachment, Message, Group)
 from django.http import JsonResponse
 from home.models import User
 
@@ -36,9 +36,18 @@ def get_user_inbox(request):
     }
     if request.method == 'POST':
         user_id = request.POST['userId']
+        grouped = request.POST['grouped']
+        group_id = request.POST['groupId']
         try:
             user = User.objects.get(pk=int(user_id))
-            user_inboxes = Message.objects.filter(receivers=user)
+            if grouped and group_id:
+                try:
+                    message_group = Group.objects.get(pk=group_id)
+                    user_inboxes = Message.objects.filter(group=message_group)
+                except Group.DoesNotExist:
+                    user_inboxes = []
+            else:
+                user_inboxes = Message.objects.filter(receivers=user)
             for inbox in user_inboxes:
                 response['inbox'].append({
                     'is_staff': inbox.sender.is_staff,
@@ -51,6 +60,35 @@ def get_user_inbox(request):
                     'timestamp': inbox.created_at,
                     'messageId': inbox.id
                 })
+        except User.DoesNotExist:
+            pass
+    return JsonResponse(data=response)
+
+
+def delete_user_inbox(request):
+    response = {
+        'status': True
+    }
+    if request.method == 'POST':
+        message_ids = request.POST['ids'].split(',')
+        user_id = request.POST['userId']
+        try:
+            user = User.objects.get(pk=user_id)
+            for msg_id in message_ids:
+                if msg_id:
+                    try:
+                        message = Message.objects.get(pk=msg_id)
+                        message_states = message.states.filter(user=user)
+                        for message_state in message_states:
+                            message_state.delete()
+                            # message.states.remove(message_state)
+                        user_instances = message.receivers.filter(id=user.id)
+                        for _user in user_instances:
+                            message.receivers.remove(_user)
+                    except Message.DoesNotExist:
+                        pass
+                else:
+                    continue
         except User.DoesNotExist:
             pass
     return JsonResponse(data=response)

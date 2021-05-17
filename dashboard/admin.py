@@ -26,7 +26,7 @@ class MessageStateAdmin(admin.ModelAdmin):
             'fields': ('user', 'read',)
         }),
     )
-    ordering = ('user',)
+    ordering = ('id',)
 
 
 class AttachmentAdmin(admin.ModelAdmin):
@@ -45,14 +45,14 @@ class AttachmentAdmin(admin.ModelAdmin):
 class MessageThreadAdmin(admin.ModelAdmin):
     model = MessageThread
     list_display = (
-        'id', 'content', 'subject', 'sender', 'get_message_states', 'get_attachments', 'created_at',
+        'id', 'content', 'sender', 'get_message_states', 'get_attachments', 'created_at',
     )
     fieldsets = (
         (None, {
-            'fields': ('content', 'subject', 'sender', 'states', 'attachments',)
+            'fields': ('content', 'sender', 'states', 'attachments',)
         }),
     )
-    ordering = ('created_at',)
+    ordering = ('id',)
 
 
 class MessageAdmin(admin.ModelAdmin):

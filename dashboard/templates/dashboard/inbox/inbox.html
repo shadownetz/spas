@@ -2,116 +2,150 @@
 {% load static %}
 {% block ibx-title %} Inbox {% endblock %}
 {% block ibx-page-name %} Inbox {% endblock %}
+{% block ibx-style %}
+    <style>
+        .nk-ibx-list{
+            min-height: 200px
+        }
+    </style>
+{% endblock %}
 
 {% block ibx-view %}
-    <!-- Top Navigation -->
-    <div class="nk-ibx-head">
-        <div class="nk-ibx-head-actions">
-            <div class="nk-ibx-head-check">
-                <div class="custom-control custom-control-sm custom-checkbox"><input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionAll"><label class="custom-control-label" for="conversionAll"></label></div>
-            </div>
-            <ul class="nk-ibx-head-tools g-1">
-                <li>
-                    <a href="javascript:void(0)" class="btn btn-icon btn-trigger">
-                        <em class="icon ni ni-undo"></em>
-                    </a>
-                </li>
-                <li class="d-none d-sm-block">
-                    <a href="javascript:void(0)" class="btn btn-icon btn-trigger">
-                        <em class="icon ni ni-trash"></em>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <ul class="nk-ibx-head-tools g-1">
-                {#                <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon btn-tooltip" title="Prev Page"><em class="icon ni ni-arrow-left"></em></a></li>#}
-                {#                <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon btn-tooltip" title="Next Page"><em class="icon ni ni-arrow-right"></em></a></li>#}
-                <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon search-toggle toggle-search" data-target="search"><em class="icon ni ni-search"></em></a></li>
-                <li class="mr-n1 d-lg-none"><a href="javascript:void(0)" class="btn btn-trigger btn-icon toggle" data-target="inbox-aside"><em class="icon ni ni-menu-alt-r"></em></a></li>
-            </ul>
-        </div>
-        <div class="search-wrap" data-search="search">
-            <div class="search-content">
-                <a href="javascript:void(0)" class="search-back btn btn-icon toggle-search" data-target="search">
-                    <em class="icon ni ni-arrow-left"></em>
-                </a>
-                <input type="text" class="form-control border-transparent form-focus-none" placeholder="Search by user or message">
-                <button class="search-submit btn btn-icon">
-                    <em class="icon ni ni-search"></em>
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- End Top Navigation-->
-
-    <div id="inbox" class="nk-ibx-list" data-simplebar>
-        <template v-if="inbox.length > 0">
-            <div class="nk-ibx-item" :class="ibx.is_read?'':'is-unread'" v-for="(ibx, idx) in inbox" :key="idx">
-                <a href="javascript:void(0)" class="nk-ibx-link"></a>
-                <div class="nk-ibx-item-elem nk-ibx-item-check">
-                    <div class="custom-control custom-control-sm custom-checkbox">
-                        <input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionItem02">
-                        <label class="custom-control-label" for="conversionItem02"></label>
-                    </div>
-                </div>
-                <div class="nk-ibx-item-elem nk-ibx-item-star" v-if="ibx.is_staff">
-                    <div class="asterisk">
-                        <a class="active" href="javascript:void(0)">
-                            <em class="asterisk-off icon ni ni-star"></em>
-                            <em class="asterisk-on icon ni ni-star-fill"></em>
+    <div id="inbox">
+        <!-- Top Navigation -->
+        <div class="nk-ibx-head">
+            <div class="nk-ibx-head-actions">
+                {#            <div class="nk-ibx-head-check">#}
+                {#                <div class="custom-control custom-control-sm custom-checkbox">#}
+                {#                    <input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionAll">#}
+                {#                    <label class="custom-control-label" for="conversionAll"></label>#}
+                {#                </div>#}
+                {#            </div>#}
+                <ul class="nk-ibx-head-tools g-1">
+                    <li>
+                        <a @click="loadInbox" href="javascript:void(0)" class="btn btn-icon btn-trigger" data-toggle="tooltip" data-placement="bottom" title="refresh">
+                            <em class="icon ni ni-undo"></em>
                         </a>
+                    </li>
+                    {% if not grouped %}
+                        <li class="d-none d-sm-block">
+                            <a @click.prevent="deleteInbox()" href="javascript:void(0)" class="btn btn-icon btn-trigger">
+                                <em class="icon ni ni-trash"></em>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div>
+                <ul class="nk-ibx-head-tools g-1">
+                    {#                <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon btn-tooltip" title="Prev Page"><em class="icon ni ni-arrow-left"></em></a></li>#}
+                    {#                <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon btn-tooltip" title="Next Page"><em class="icon ni ni-arrow-right"></em></a></li>#}
+                    {#                    <li><a href="javascript:void(0)" class="btn btn-trigger btn-icon search-toggle toggle-search" data-target="search"><em class="icon ni ni-search"></em></a></li>#}
+                    <li class="mr-n1 d-lg-none"><a href="javascript:void(0)" class="btn btn-trigger btn-icon toggle" data-target="inbox-aside"><em class="icon ni ni-menu-alt-r"></em></a></li>
+                </ul>
+            </div>
+            {#            <div class="search-wrap" data-search="search">#}
+            {#                <div class="search-content">#}
+            {#                    <a href="javascript:void(0)" class="search-back btn btn-icon toggle-search" data-target="search">#}
+            {#                        <em class="icon ni ni-arrow-left"></em>#}
+            {#                    </a>#}
+            {#                    <input type="text" class="form-control border-transparent form-focus-none" placeholder="Search by user or message">#}
+            {#                    <button class="search-submit btn btn-icon">#}
+            {#                        <em class="icon ni ni-search"></em>#}
+            {#                    </button>#}
+            {#                </div>#}
+            {#            </div>#}
+        </div>
+        <!-- End Top Navigation-->
+
+        <div class="nk-ibx-list" data-simplebar>
+            <template v-if="inbox.length > 0">
+                <div class="nk-ibx-item" :class="ibx.is_read?'':'is-unread'" v-for="(ibx, idx) in inbox" :key="idx">
+                    <a :href="'/dashboard/inbox/'+ibx.messageId" class="nk-ibx-link"></a>
+                    {% if not grouped %}
+                        <div class="nk-ibx-item-elem nk-ibx-item-check">
+                            <div class="custom-control custom-control-sm custom-checkbox">
+                                <input type="checkbox" class="custom-control-input nk-dt-item-check" v-model="ibx.selected" :id="'ibx_'+idx">
+                                <label class="custom-control-label" :for="'ibx_'+idx"></label>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="nk-ibx-item-elem nk-ibx-item-star" v-if="ibx.is_staff">
+                        <div class="asterisk">
+                            <a class="active" href="javascript:void(0)">
+                                <em class="asterisk-off icon ni ni-star"></em>
+                                <em class="asterisk-on icon ni ni-star-fill"></em>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="nk-ibx-item-elem nk-ibx-item-user">
-                    <div class="user-card">
-                        <div class="user-avatar">
-                            <img :src="ibx.avatar" alt="user icon">
-                        </div>
-                        <div class="user-name">
-                            <div class="lead-text">[[ibx.name]]</div>
+                    <div class="nk-ibx-item-elem nk-ibx-item-user">
+                        <div class="user-card">
+                            <div class="user-avatar">
+                                <img :src="ibx.avatar" alt="user icon">
+                            </div>
+                            <div class="user-name">
+                                <div class="lead-text">[[ibx.name]]</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="nk-ibx-item-elem nk-ibx-item-fluid">
-                    <div class="nk-ibx-context-group">
-                        <div class="nk-ibx-context-badges" v-if="!ibx.is_read">
-                            <span class="badge badge-primary">unread</span>
-                        </div>
-                        <div class="nk-ibx-context">
+                    <div class="nk-ibx-item-elem nk-ibx-item-fluid">
+                        <div class="nk-ibx-context-group">
+                            <div class="nk-ibx-context-badges" v-if="!ibx.is_read">
+                                <span class="badge badge-primary">unread</span>
+                            </div>
+                            <div class="nk-ibx-context">
                             <span class="nk-ibx-context-text">
                                 <span class="heading">[[ibx.subject]]</span>
-                                <span v-html="ibx.content" class="text-truncate"></span>
+                                <small v-html="ibx.content" class="text-truncate"></small>
                             </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nk-ibx-item-elem nk-ibx-item-attach" v-if="ibx.has_attachments">
+                        <a class="link link-light">
+                            <em class="icon ni ni-clip-h"></em>
+                        </a>
+                    </div>
+                    <div class="nk-ibx-item-elem nk-ibx-item-time">
+                        <div class="sub-text">[[getReadableTime(ibx.timestamp)]]</div>
+                    </div>
+                    <div class="nk-ibx-item-elem nk-ibx-item-tools">
+                        <div class="ibx-actions">
+                            <ul class="ibx-actions-visible gx-2">
+                                {% if not grouped %}
+                                    <li>
+                                        <div>
+                                            <a @click="deleteInbox(ibx.messageId)" href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger">
+                                                <em class="icon ni ni-trash"></em>
+                                            </a>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="nk-ibx-item-elem nk-ibx-item-attach"><a class="link link-light"><em class="icon ni ni-clip-h"></em></a></div>
-                <div class="nk-ibx-item-elem nk-ibx-item-time">
-                    <div class="sub-text">[[getReadableTime(ibx.timestamp)]]</div>
+            </template>
+            <template v-else>
+                <div class="d-flex justify-content-center py-4">
+                    <h6>Your inbox is empty <em class="ni ni-inbox"></em></h6>
                 </div>
-                <div class="nk-ibx-item-elem nk-ibx-item-tools">
-                    <div class="ibx-actions">
-                        <ul class="ibx-actions-visible gx-2">
-                            <li>
-                                <div>
-                                    <a href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger">
-                                        <em class="icon ni ni-trash"></em>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template v-else>
-            <div class="d-flex justify-content-center py-4">
-                <h6>Your inbox is empty <em class="ni ni-inbox"></em></h6>
-            </div>
-        </template>
+            </template>
+        </div>
 
-
+        <input type="hidden" id="ibx-is-grouped" value="{{ grouped|lower }}">
+        <input type="hidden" id="group-id" value="{{ request.GET.groupId }}">
+        <!-- Toast Message -->
+        <div id="inboxToast" class="toast" style="display:none;position: fixed; opacity: 1; top: 10px; right: 20px;z-index:99999">
+            {#            <div class="toast-header">#}
+            {#                <strong class="mr-auto text-primary"></strong>#}
+            {#                <small></small>#}
+            {#                <button type="button" class="close" data-dismiss="toast" aria-label="Close">#}
+            {#                    <span aria-hidden="true">&times;</span>#}
+            {#                </button>#}
+            {#            </div>#}
+            <div class="toast-body">[[msg_alert.message]]</div>
+        </div>
     </div>
 {% endblock %}
 
@@ -124,15 +158,52 @@
                 delimiters: ['[[', ']]'],
                 data(){
                     return {
-                        inbox: []
+                        inbox: [],
+                        refresh_message_interval: NaN,
+                        msg_alert: {
+                            message: '',
+                            error: false
+                        }
                     }
                 },
                 mixins: [VueMethodMixins],
                 methods: {
                     async loadInbox(){
                         const inbox = new Inbox();
-                        const response = await inbox.fetchInbox();
-                        this.inbox = response.inbox
+                        let response;
+                        if($('#ibx-is-grouped').val() === 'true'){
+                            response = await inbox.fetchInbox(true);
+                        }else{
+                            response = await inbox.fetchInbox();
+                        }
+                        if(response.status){
+                            this.inbox = response.inbox.map(content=>Object.assign(content, {selected: false}));
+                            $('#msg-count').text(this.inbox.length);
+                        }
+                        if(isNaN(this.refresh_message_interval)){
+                            this.refresh_message_interval = setInterval(()=>{
+                                this.loadInbox()
+                            }, 3000)
+                        }
+                    },
+                    async deleteInbox(msgId=null){
+                        let confirmation = confirm("Continue with this operation?");
+                        if(confirmation){
+                            let selected_inbox = this.inbox.filter(content=>content.selected===true);
+                            const inbox = new Inbox();
+                            let response;
+                            if(msgId !== null){
+                                response = await inbox.deleteInbox(msgId);
+                            }
+                            else if(selected_inbox.length > 0){
+                                response = await inbox.deleteInbox(selected_inbox.map(content=>content.messageId).join(','));
+                            }
+                            if(response.status){
+                                this.msg_alert.message = 'Message deleted';
+                                $('#inboxToast').fadeIn('slow').delay(2000).fadeOut()
+                            }
+                            this.loadInbox()
+                        }
                     }
                 },
                 created(){

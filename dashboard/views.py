@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from home.models import User, StudentProfile, StaffProfile
-from .models import (Group, Message, MessageState, Attachment)
+from .models import (Group, Message, MessageState, Attachment, MessageThread)
 from django.db import IntegrityError
 from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
@@ -159,11 +159,28 @@ def signout(request):
 
 @login_required
 def inbox(request):
-    return render(request, 'dashboard/inbox/inbox.html')
+    group_id = request.GET.get('groupId')
+    user_message_groups = Group.objects.filter(members=request.user)
+    if group_id:
+        try:
+            message_group = Group.objects.get(pk=group_id)
+            messages = Message.objects.filter(group=message_group)
+        except Group.DoesNotExist:
+            messages = []
+    else:
+        group_id = ''
+        messages = Message.objects.filter(receivers=request.user)
+    return render(request, 'dashboard/inbox/inbox.html', {
+        'messages': messages,
+        'grouped': (lambda x: True if len(x) > 0 else False)(group_id),
+        'message_groups': user_message_groups
+    })
 
 
 @login_required
 def inbox_create(request):
+    messages = Message.objects.filter(receivers=request.user)
+    user_message_groups = Group.objects.filter(members=request.user)
     if request.method == 'POST':
         send_to = request.POST['to'].split(',')    # [email,email,email]
         group_id = request.POST['group']   # group id
@@ -210,10 +227,65 @@ def inbox_create(request):
     return render(request, 'dashboard/inbox/composeSMS.html', {
         'users': users,
         'groups': groups,
-        'custom_groups': user_custom_groups
+        'custom_groups': user_custom_groups,
+        'messages': messages,
+        'message_groups': user_message_groups
     })
 
 
 @login_required
-def inbox_content(request):
-    return render(request, 'dashboard/inbox/inboxContent.html')
+def inbox_content(request, inbox_id):
+    if request.method == 'POST':
+        parent_message_id = request.POST['parentMessageID']
+        attachment_ids = request.POST['attachments'].split(',')
+        message_content = request.POST['content']
+        try:
+            parent_message = Message.objects.get(pk=parent_message_id)
+            new_message_thread = MessageThread(content=message_content, sender=request.user)
+            message_receivers = parent_message.receivers.all()
+            new_message_thread.save()
+            if len(message_receivers) > 0:
+                for receiver in message_receivers:
+                    new_message_thread.states.add(MessageState.objects.create(user=receiver))
+            elif parent_message.group:
+                for member in parent_message.group.members.all():
+                    new_message_thread.states.add(MessageState.objects.create(user=member))
+            for file_id in attachment_ids:
+                if file_id:
+                    try:
+                        new_message_thread.attachments.add(Attachment.objects.get(pk=file_id))
+                    except Attachment.DoesNotExist:
+                        pass
+                else:
+                    continue
+            new_message_thread.save()
+            parent_message.threads.add(new_message_thread)
+            parent_message.save()
+        except Message.DoesNotExist:
+            pass
+        return redirect('home:dashboard:inbox_content', parent_message_id)
+    try:
+        user_message_groups = Group.objects.filter(members=request.user)
+        parent_message = Message.objects.get(pk=inbox_id)
+        # Mark message as read for the current user
+        for message_state in parent_message.states.filter(user=request.user):
+            message_state.read = True
+            message_state.save()
+        # Also mark message threads as read
+        for thread in parent_message.threads.all():
+            try:
+                user_thread_message_states = thread.states.filter(user=request.user)
+                for message_state in user_thread_message_states:
+                    message_state.read = True
+                    message_state.save()
+            except MessageState.DoesNotExist:
+                pass
+    except Message.DoesNotExist:
+        pass
+    else:
+        return render(request, 'dashboard/inbox/inboxContent.html', {
+            'parent_message': parent_message,
+            'message_groups': user_message_groups
+        })
+    return redirect('home:dashboard:inbox')
+

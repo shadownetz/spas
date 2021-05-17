@@ -24,7 +24,7 @@
                         <a class="nk-ibx-menu-item" href="{% url 'home:dashboard:inbox' %}">
                             <em class="icon ni ni-inbox"></em>
                             <span class="nk-ibx-menu-text">Inbox</span>
-                            <span class="badge badge-pill badge-primary">0</span>
+                            <span id="msg-count" class="badge badge-pill badge-primary">{{ messages.count }}</span>
                         </a>
                     </li>
                     <li>
@@ -43,62 +43,22 @@
                 </ul>
                 <div class="nk-ibx-nav-head">
                     <h6 class="title">Groups</h6>
-                    <a class="link" href="javascript:void(0)">
-                        <em class="icon ni ni-plus-c"></em>
-                    </a>
+                    {#                    <a class="link" href="javascript:void(0)">#}
+                    {#                        <em class="icon ni ni-plus-c"></em>#}
+                    {#                    </a>#}
                 </div>
                 <ul class="nk-ibx-label">
-                    <li><a href="javascript:void(0)"><span class="nk-ibx-label-dot dot dot-xl dot-label bg-primary"></span><span class="nk-ibx-label-text">Business</span></a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>Edit Label</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Remove Label</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Label Color</span></a></li>
-                                    <li class="divider"></li>
-                                </ul>
-                                <ul class="link-check">
-                                    <li><a href="javascript:void(0)">Show if unread</a></li>
-                                    <li class="active"><a href="javascript:void(0)">Show</a></li>
-                                    <li><a href="javascript:void(0)">Hide</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="javascript:void(0)"><span class="nk-ibx-label-dot dot dot-xl dot-label bg-danger"></span><span class="nk-ibx-label-text">Personal</span></a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>Edit Label</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Remove Label</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Label Color</span></a></li>
-                                    <li class="divider"></li>
-                                </ul>
-                                <ul class="link-check">
-                                    <li><a href="javascript:void(0)">If unread</a></li>
-                                    <li class="active"><a href="javascript:void(0)">Show</a></li>
-                                    <li><a href="javascript:void(0)">Hide</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="javascript:void(0)"><span class="nk-ibx-label-dot dot dot-xl dot-label bg-success"></span><span class="nk-ibx-label-text">Social</span></a>
-                        <div class="dropdown"><a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
-                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                                <ul class="link-list-opt no-bdr">
-                                    <li><a href="javascript:void(0)"><span>Edit Label</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Remove Label</span></a></li>
-                                    <li><a href="javascript:void(0)"><span>Label Color</span></a></li>
-                                    <li class="divider"></li>
-                                </ul>
-                                <ul class="link-check">
-                                    <li><a href="javascript:void(0)">Show if unread</a></li>
-                                    <li class="active"><a href="javascript:void(0)">Show</a></li>
-                                    <li><a href="javascript:void(0)">Hide</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
+                    {% for group in message_groups %}
+                        <li>
+                            <a href="{% url 'home:dashboard:inbox' %}?groupId={{ group.id }}">
+                                <span class="nk-ibx-label-dot dot dot-xl dot-label {% cycle 'bg-primary' 'bg-danger' 'bg-success'%} "></span>
+                                <span class="nk-ibx-label-text">{{ group.title|truncatewords:2 }}</span></a>
+                        </li>
+                    {% empty %}
+                        <li>
+                            <a href="javascript:void(0)">No Group</a>
+                        </li>
+                    {% endfor %}
                 </ul>
                 <div class="nk-ibx-status">
                     <div class="nk-ibx-status-info">

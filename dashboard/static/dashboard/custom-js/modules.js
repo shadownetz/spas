@@ -90,26 +90,50 @@ class Attachment{
 }
 
 class Inbox{
-    constructor(userId){
+    constructor(){
         this.userID = $('#usr-id');
-        this.fetchInboxURL = $('#fetch-inbox-url')
+        this.fetchInboxURL = $('#fetch-inbox-url');
+        this.deleteInboxURL = $('#delete-inbox-url');
+        this.inboxGroupID = $('#group-id');
     }
 
-    async fetchInbox(){
+    async fetchInbox(is_grouped=false){
         let response = {
             inbox: [],
+            status: true
         };
         try{
             response = await $.ajax({
                 url: this.fetchInboxURL.val(),
                 type: 'POST',
                 data: {
-                    userId: this.userID.val()
+                    userId: this.userID.val(),
+                    grouped: is_grouped,
+                    groupId: this.inboxGroupID.val()
                 },
                 dataType: 'json',
             });
         }catch (e) {
+            response.status = false;
             console.log('Error while fetching inbox:', e)
+        }
+        return Promise.resolve(response)
+    }
+    async deleteInbox(messageIds=''){
+        let response = {status: true};
+        try{
+            response = await $.ajax({
+                url: this.deleteInboxURL.val(),
+                type: 'POST',
+                data: {
+                    ids: messageIds,
+                    userId: this.userID.val(),
+                },
+                dataType: 'json',
+            });
+        }catch (e) {
+            response.status = false;
+            console.log('Error while deleting inbox:', e)
         }
         return Promise.resolve(response)
     }

@@ -184,6 +184,7 @@
                 send_message_as = 'email'
             }
         });
+
         attachment.on('change', async function(event){
             const files = event.target.files;
             const new_attachment = new Attachment(files);

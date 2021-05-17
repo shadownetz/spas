@@ -35,27 +35,29 @@ class MessageState(models.Model):
     read = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.name+'_msg_state'
+        return self.user.name+'_msg_state_{0}'.format(self.id)
 
 
 class Attachment(models.Model):
     file = models.FileField(upload_to=attachment_directory_path, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def get_file_name(self):
+        return self.file.name.split('/').pop()
+
 
 class MessageThread(models.Model):
     content = models.TextField(max_length=2000, blank=True)
-    subject = models.CharField(max_length=100, blank=True)
     sender = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,  null=True)
     states = models.ManyToManyField(MessageState)
     attachments = models.ManyToManyField(Attachment)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_message_states(self):
-        return ",".join([s for s in self.states.all()])
+        return ",".join([s.user.name + '_msg_state_{0}'.format(s.id) for s in self.states.all()])
 
     def get_attachments(self):
-        return ",".join([a for a in self.attachments.all()])
+        return ",".join(['attach_{0}'.format(a.id) for a in self.attachments.all()])
 
 
 class Message(models.Model):
@@ -67,10 +69,10 @@ class Message(models.Model):
         related_name='message_sender',
         null=True
     )
-    receivers = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    receivers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     states = models.ManyToManyField(MessageState)
     threads = models.ManyToManyField(MessageThread, blank=True)
-    group = models.ForeignKey(to=Group, on_delete=models.SET_NULL, null=True)
+    group = models.ForeignKey(to=Group, on_delete=models.SET_NULL, null=True, blank=True)
     attachments = models.ManyToManyField(Attachment, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -78,19 +80,19 @@ class Message(models.Model):
         return self.states.get(user=user).read
 
     def has_attachments(self):
-        return self.attachments.all().count() > 0
+        return len(self.attachments.all()) > 0
 
     def get_receivers(self):
-        return "\n".join([r.email for r in self.receivers.all()])
+        return ",".join([r.email for r in self.receivers.all()])
 
     def get_message_states(self):
-        return "\n".join([s.user.name+'_msg_state' for s in self.states.all()])
+        return ",".join([s.user.name+'_msg_state_{0}'.format(s.id) for s in self.states.all()])
 
     def get_message_threads(self):
-        return "\n".join(['thread_{0}'.format(t.id) for t in self.threads.all()])
+        return ",".join(['thread_{0}'.format(t.id) for t in self.threads.all()])
 
     def get_attachments(self):
-        return "\n".join(['attach_{0}'.format(a.id) for a in self.attachments.all()])
+        return ",".join(['attach_{0}'.format(a.id) for a in self.attachments.all()])
 
 
 @receiver(pre_delete, sender=Message)
