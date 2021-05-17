@@ -161,18 +161,18 @@ def signout(request):
 def inbox(request):
     group_id = request.GET.get('groupId')
     user_message_groups = Group.objects.filter(members=request.user)
-    if group_id:
-        try:
-            message_group = Group.objects.get(pk=group_id)
-            messages = Message.objects.filter(group=message_group)
-        except Group.DoesNotExist:
-            messages = []
-    else:
+    if not group_id:
         group_id = ''
-        messages = Message.objects.filter(receivers=request.user)
     return render(request, 'dashboard/inbox/inbox.html', {
-        'messages': messages,
         'grouped': (lambda x: True if len(x) > 0 else False)(group_id),
+        'message_groups': user_message_groups
+    })
+
+
+@login_required
+def sent_inbox(request):
+    user_message_groups = Group.objects.filter(members=request.user)
+    return render(request, 'dashboard/inbox/inboxSent.html', {
         'message_groups': user_message_groups
     })
 

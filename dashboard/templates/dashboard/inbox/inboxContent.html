@@ -87,7 +87,7 @@
                             </div>
                             <div class="nk-reply-info">
                                 <div class="nk-reply-author lead-text">
-                                    {{ parent_message.sender.name }}
+                                    {{ parent_message.sender.name }} <small class="ml-3 text-muted">click to expand</small>
                                     <span class="date d-sm-none"> {{ parent_message.created_at|date }}</span>
                                 </div>
                                 <div class="dropdown nk-reply-msg-info">
@@ -174,7 +174,7 @@
                                     </div>
                                     <div class="nk-reply-info">
                                         <div class="nk-reply-author lead-text">
-                                            {{ message_thread.sender.name }}
+                                            {{ message_thread.sender.name }} <small class="ml-3 text-muted">click to expand</small>
                                             <span class="date d-sm-none"> {{ message_thread.created_at|date }}</span>
                                         </div>
                                         <div class="nk-reply-msg-excerpt">

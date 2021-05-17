@@ -8,6 +8,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('inbox', inbox, name='inbox'),
     path('inbox/compose', inbox_create, name='inbox_new'),
+    path('inbox/sent', sent_inbox, name='sent_inbox'),
     path('inbox/<int:inbox_id>', inbox_content, name='inbox_content'),
     path('logout', signout, name='signout'),
 
@@ -15,5 +16,6 @@ urlpatterns = [
     path('api/attachment/delete', delete_attachment, name='delete_attach'),
     path('api/inbox/fetch', get_user_inbox, name='fetch_inbox'),
     path('api/inbox/delete', delete_user_inbox, name='delete_inbox'),
-
+    path('api/inbox/sent', get_user_sent_inbox, name='fetch_sent_inbox'),
+    path('api/notifications/fetch', get_notifications, name='fetch_notifications'),
 ]

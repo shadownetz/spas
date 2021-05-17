@@ -132,7 +132,7 @@
         <div class="nk-wrap ">
 
             <!-- Top Navigation -->
-            <div class="nk-header nk-header-fixed is-light">
+            <div id="spasTopNav" class="nk-header nk-header-fixed is-light">
                 <div class="container-fluid">
                     <div class="nk-header-wrap">
                         <div class="nk-menu-trigger d-xl-none ml-n1"><a href="javascript:void(0)" class="nk-nav-toggle nk-quick-nav-icon" data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a></div>
@@ -150,40 +150,33 @@
                                         <div class="icon-status icon-status-info"><em class="icon ni ni-bell"></em></div>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right">
-                                        <div class="dropdown-head"><span class="sub-title nk-dropdown-title">Notifications</span><a href="javascript:void(0)">Mark All as Read</a></div>
+                                        <div class="dropdown-head">
+                                            <span class="sub-title nk-dropdown-title">Notifications</span>
+                                            {#                                            <a href="javascript:void(0)">Mark All as Read</a>#}
+                                        </div>
                                         <div class="dropdown-body">
                                             <div class="nk-notification">
-                                                <div class="nk-notification-item dropdown-inner">
-                                                    <div class="nk-notification-icon"><em class="icon icon-circle bg-primary-dim ni ni-share"></em></div>
-                                                    <div class="nk-notification-content">
-                                                        <div class="nk-notification-text">Iliash shared <span>Dashlite-v2</span> with you.</div>
-                                                        <div class="nk-notification-time">Just now</div>
+                                                <template v-if="notification.content.length > 0">
+                                                    <div class="nk-notification-item dropdown-inner" v-for="(item, idx) in notification.content" :key="idx">
+                                                        <a :href="'inbox/'+item.parentMsgId" class="d-flex">
+                                                            <div class="nk-notification-icon">
+                                                                <em class="icon icon-circle bg-info-dim ni ni-edit"></em>
+                                                            </div>
+                                                            <div class="nk-notification-content">
+                                                                <div class="nk-notification-text">[[item.sender]] <span>replied</span> to <span class="font-weight-bold">[[item.parentMsgTitle]]</span></div>
+                                                                <div class="nk-notification-time">[[getReadableDatetime(item.timestamp)]]</div>
+                                                            </div>
+                                                        </a>
                                                     </div>
-                                                </div>
-                                                <div class="nk-notification-item dropdown-inner">
-                                                    <div class="nk-notification-icon"><em class="icon icon-circle bg-info-dim ni ni-edit"></em></div>
-                                                    <div class="nk-notification-content">
-                                                        <div class="nk-notification-text">Iliash <span>invited</span> you to edit <span>DashLite</span> folder</div>
-                                                        <div class="nk-notification-time">2 hrs ago</div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="d-flex justify-content-center py-3">
+                                                        <p>You have no new notification</p>
                                                     </div>
-                                                </div>
-                                                <div class="nk-notification-item dropdown-inner">
-                                                    <div class="nk-notification-icon"><em class="icon icon-circle bg-primary-dim ni ni-share"></em></div>
-                                                    <div class="nk-notification-content">
-                                                        <div class="nk-notification-text">You have shared <span>project v2</span> with Parvez.</div>
-                                                        <div class="nk-notification-time">7 days ago</div>
-                                                    </div>
-                                                </div>
-                                                <div class="nk-notification-item dropdown-inner">
-                                                    <div class="nk-notification-icon"><em class="icon icon-circle bg-success-dim ni ni-spark"></em></div>
-                                                    <div class="nk-notification-content">
-                                                        <div class="nk-notification-text">Your <span>Subscription</span> renew successfully.</div>
-                                                        <div class="nk-notification-time">2 month ago</div>
-                                                    </div>
-                                                </div>
+                                                </template>
                                             </div>
                                         </div>
-                                        <div class="dropdown-foot center"><a href="javascript:void(0)">View All</a></div>
+                                        {#                                        <div class="dropdown-foot center"><a href="javascript:void(0)">View All</a></div>#}
                                     </div>
                                 </li>
                                 <li class="dropdown user-dropdown">
@@ -246,6 +239,8 @@
 <input type="hidden" id="delete-attach-url" value="{% url 'home:dashboard:delete_attach' %}">
 <input type="hidden" id="fetch-inbox-url" value="{% url 'home:dashboard:fetch_inbox' %}">
 <input type="hidden" id="delete-inbox-url" value="{% url 'home:dashboard:delete_inbox' %}">
+<input type="hidden" id="fetch-sent-inbox-url" value="{% url 'home:dashboard:fetch_sent_inbox' %}">
+<input type="hidden" id="fetch-noti-url" value="{% url 'home:dashboard:fetch_notifications' %}">
 <input type="hidden" id="usr-id" value="{{ request.user.id }}">
 
 
@@ -254,11 +249,44 @@
 <script src="{% static 'dashboard/assets/js/demo-settings.js' %}"></script>
 <script src="{% static 'dashboard/assets/js/apps/inbox.js' %}"></script>
 <script src="{% static 'dashboard/assets/js/libs/tagify.js' %}"></script>
+<script src="{% static 'home/plugins/vue/vue.js' %}"></script>
 <script src="{% static 'dashboard/custom-js/csrf_ajax.js' %}"></script>
 <script src="{% static 'dashboard/custom-js/modules.js' %}"></script>
 <script>
     $(function(){
-        $('.nk-apps-sidebar').addClass('is-theme')
+        $('.nk-apps-sidebar').addClass('is-theme');
+
+        new Vue({
+            el: '#spasTopNav',
+            delimiters: ['[[', ']]'],
+            name: 'TopNav',
+            data(){
+                return {
+                    notification: {
+                        content: [],
+                        refreshInterval: NaN
+                    }
+                }
+            },
+            mixins: [VueMethodMixins],
+            methods: {
+                async loadNotifications(){
+                    const notification = new SpasNotification();
+                    const response = await notification.fetchNotifications();
+                    if(response.status){
+                        this.notification.content = response.threads
+                    }
+                    if(isNaN(this.refreshInterval)){
+                        this.refreshInterval = setInterval(()=>{
+                            this.loadNotifications()
+                        }, 3000)
+                    }
+                }
+            },
+            created(){
+                this.loadNotifications()
+            }
+        })
     })
 </script>
 {% block script %}{% endblock %}

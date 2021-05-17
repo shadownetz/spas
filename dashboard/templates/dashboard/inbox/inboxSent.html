@@ -1,7 +1,7 @@
 {% extends 'dashboard/components/inboxContainer.html' %}
 {% load static %}
-{% block ibx-title %} Inbox {% endblock %}
-{% block ibx-page-name %} Inbox {% endblock %}
+{% block ibx-title %} Sent Inbox {% endblock %}
+{% block ibx-page-name %} Sent Inbox {% endblock %}
 {% block ibx-style %}
     <style>
         .nk-ibx-list{
@@ -27,13 +27,11 @@
                             <em class="icon ni ni-undo"></em>
                         </a>
                     </li>
-                    {% if not grouped %}
-                        <li class="d-none d-sm-block">
-                            <a @click.prevent="deleteInbox()" href="javascript:void(0)" class="btn btn-icon btn-trigger">
-                                <em class="icon ni ni-trash"></em>
-                            </a>
-                        </li>
-                    {% endif %}
+                    {#                    <li class="d-none d-sm-block">#}
+                    {#                        <a @click.prevent="deleteInbox()" href="javascript:void(0)" class="btn btn-icon btn-trigger">#}
+                    {#                            <em class="icon ni ni-trash"></em>#}
+                    {#                        </a>#}
+                    {#                    </li>#}
                 </ul>
             </div>
             <div>
@@ -60,16 +58,14 @@
 
         <div class="nk-ibx-list" data-simplebar>
             <template v-if="inbox.length > 0">
-                <div class="nk-ibx-item" :class="ibx.is_read?'':'is-unread'" v-for="(ibx, idx) in inbox" :key="idx">
+                <div class="nk-ibx-item" v-for="(ibx, idx) in inbox" :key="idx">
                     <a :href="'/dashboard/inbox/'+ibx.messageId" class="nk-ibx-link"></a>
-                    {% if not grouped %}
-                        <div class="nk-ibx-item-elem nk-ibx-item-check">
-                            <div class="custom-control custom-control-sm custom-checkbox">
-                                <input type="checkbox" class="custom-control-input nk-dt-item-check" v-model="ibx.selected" :id="'ibx_'+idx">
-                                <label class="custom-control-label" :for="'ibx_'+idx"></label>
-                            </div>
-                        </div>
-                    {% endif %}
+                    {#                    <div class="nk-ibx-item-elem nk-ibx-item-check">#}
+                    {#                        <div class="custom-control custom-control-sm custom-checkbox">#}
+                    {#                            <input type="checkbox" class="custom-control-input nk-dt-item-check" v-model="ibx.selected" :id="'ibx_'+idx">#}
+                    {#                            <label class="custom-control-label" :for="'ibx_'+idx"></label>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
                     <div class="nk-ibx-item-elem nk-ibx-item-star" v-if="ibx.is_staff">
                         <div class="asterisk">
                             <a class="active" href="javascript:void(0)">
@@ -112,15 +108,13 @@
                     <div class="nk-ibx-item-elem nk-ibx-item-tools">
                         <div class="ibx-actions">
                             <ul class="ibx-actions-visible gx-2">
-                                {% if not grouped %}
-                                    <li>
-                                        <div>
-                                            <a @click="deleteInbox(ibx.messageId)" href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger">
-                                                <em class="icon ni ni-trash"></em>
-                                            </a>
-                                        </div>
-                                    </li>
-                                {% endif %}
+{#                                <li>#}
+{#                                    <div>#}
+{#                                        <a @click="deleteInbox(ibx.messageId)" href="javascript:void(0)" class="btn btn-sm btn-icon btn-trigger">#}
+{#                                            <em class="icon ni ni-trash"></em>#}
+{#                                        </a>#}
+{#                                    </div>#}
+{#                                </li>#}
                             </ul>
                         </div>
                     </div>
@@ -128,24 +122,24 @@
             </template>
             <template v-else>
                 <div class="d-flex justify-content-center py-4">
-                    <h6>Your inbox is empty <em class="ni ni-inbox"></em></h6>
+                    <h6>Your sent inbox is empty <em class="ni ni-inbox"></em></h6>
                 </div>
             </template>
         </div>
 
-        <input type="hidden" id="ibx-is-grouped" value="{{ grouped|lower }}">
-        <input type="hidden" id="group-id" value="{{ request.GET.groupId }}">
+{#        <input type="hidden" id="ibx-is-grouped" value="{{ grouped|lower }}">#}
+{#        <input type="hidden" id="group-id" value="{{ request.GET.groupId }}">#}
         <!-- Toast Message -->
-        <div id="inboxToast" class="toast" style="display:none;position: fixed; opacity: 1; top: 10px; right: 20px;z-index:99999">
-            {#            <div class="toast-header">#}
-            {#                <strong class="mr-auto text-primary"></strong>#}
-            {#                <small></small>#}
-            {#                <button type="button" class="close" data-dismiss="toast" aria-label="Close">#}
-            {#                    <span aria-hidden="true">&times;</span>#}
-            {#                </button>#}
-            {#            </div>#}
-            <div class="toast-body">[[msg_alert.message]]</div>
-        </div>
+{#        <div id="inboxToast" class="toast" style="display:none;position: fixed; opacity: 1; top: 10px; right: 20px;z-index:99999">#}
+{#            <div class="toast-header">#}
+{#                <strong class="mr-auto text-primary"></strong>#}
+{#                <small></small>#}
+{#                <button type="button" class="close" data-dismiss="toast" aria-label="Close">#}
+{#                    <span aria-hidden="true">&times;</span>#}
+{#                </button>#}
+{#            </div>#}
+{#            <div class="toast-body">[[msg_alert.message]]</div>#}
+{#        </div>#}
     </div>
 {% endblock %}
 
@@ -154,7 +148,7 @@
         $(function(){
             new Vue({
                 el: '#inbox',
-                name: 'Inbox',
+                name: 'InboxSent',
                 delimiters: ['[[', ']]'],
                 data(){
                     return {
@@ -170,39 +164,14 @@
                 methods: {
                     async loadInbox(){
                         const inbox = new Inbox();
-                        let response;
-                        if($('#ibx-is-grouped').val() === 'true'){
-                            response = await inbox.fetchInbox(true);
-                        }else{
-                            response = await inbox.fetchInbox();
-                        }
+                        const response = await inbox.fetchSentInbox();
                         if(response.status){
-                            this.inbox = response.inbox.map(content=>Object.assign(content, {selected: false}));
-                            $('#msg-count').text(this.inbox.length);
+                            this.inbox = response.inbox;
                         }
                         if(isNaN(this.refresh_message_interval)){
                             this.refresh_message_interval = setInterval(()=>{
                                 this.loadInbox()
                             }, 3000)
-                        }
-                    },
-                    async deleteInbox(msgId=null){
-                        let confirmation = confirm("Continue with this operation?");
-                        if(confirmation){
-                            let selected_inbox = this.inbox.filter(content=>content.selected===true);
-                            const inbox = new Inbox();
-                            let response;
-                            if(msgId !== null){
-                                response = await inbox.deleteInbox(msgId);
-                            }
-                            else if(selected_inbox.length > 0){
-                                response = await inbox.deleteInbox(selected_inbox.map(content=>content.messageId).join(','));
-                            }
-                            if(response.status){
-                                this.msg_alert.message = 'Message deleted';
-                                $('#inboxToast').fadeIn('slow').delay(2000).fadeOut()
-                            }
-                            this.loadInbox()
                         }
                     }
                 },

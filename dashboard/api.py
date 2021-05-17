@@ -1,7 +1,7 @@
 import base64
 from django.core.files.base import ContentFile
 from django.core.files import File
-from .models import (Attachment, Message, Group)
+from .models import (Attachment, Message, Group, MessageThread)
 from django.http import JsonResponse
 from home.models import User
 
@@ -65,6 +65,33 @@ def get_user_inbox(request):
     return JsonResponse(data=response)
 
 
+def get_user_sent_inbox(request):
+    response = {
+        'inbox': [],
+        'status': True
+    }
+    if request.method == 'POST':
+        user_id = request.POST['userId']
+        try:
+            user = User.objects.get(pk=int(user_id))
+            user_inboxes = Message.objects.filter(sender=user)
+            for inbox in user_inboxes:
+                response['inbox'].append({
+                    'is_staff': inbox.sender.is_staff,
+                    'avatar': inbox.sender.avatar.url,
+                    'name': inbox.sender.name,
+                    # 'is_read': inbox.get_message_state(user),
+                    'subject': inbox.subject,
+                    'content': inbox.content,
+                    'has_attachments': inbox.has_attachments(),
+                    'timestamp': inbox.created_at,
+                    'messageId': inbox.id
+                })
+        except User.DoesNotExist:
+            pass
+    return JsonResponse(data=response)
+
+
 def delete_user_inbox(request):
     response = {
         'status': True
@@ -89,6 +116,37 @@ def delete_user_inbox(request):
                         pass
                 else:
                     continue
+        except User.DoesNotExist:
+            pass
+    return JsonResponse(data=response)
+
+
+def get_notifications(request):
+    response = {
+        'status': True,
+        'threads': []
+    }
+    if request.method == 'POST':
+        user_id = request.POST['userId']
+        try:
+            user = User.objects.get(pk=user_id)
+            filtered_msg = Message.objects.filter(threads__states__user=user, threads__states__read=False)
+            valid_ids = []
+            for msg in filtered_msg:
+                for msg_thread in msg.threads.all():
+                    for state in msg_thread.states.all():
+                        if not state.read:
+                            valid_ids.append(msg_thread.id)
+                    try:
+                        if valid_ids.index(msg_thread.id) >= 0:
+                            response['threads'].append({
+                                'sender': msg_thread.sender.name,
+                                'parentMsgTitle': msg.subject,
+                                'parentMsgId': msg.id,
+                                'timestamp': msg_thread.created_at
+                            })
+                    except ValueError:
+                        continue
         except User.DoesNotExist:
             pass
     return JsonResponse(data=response)

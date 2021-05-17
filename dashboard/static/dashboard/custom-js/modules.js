@@ -94,6 +94,7 @@ class Inbox{
         this.userID = $('#usr-id');
         this.fetchInboxURL = $('#fetch-inbox-url');
         this.deleteInboxURL = $('#delete-inbox-url');
+        this.fetchSentInboxURL = $('#fetch-sent-inbox-url');
         this.inboxGroupID = $('#group-id');
     }
 
@@ -119,6 +120,27 @@ class Inbox{
         }
         return Promise.resolve(response)
     }
+
+    async fetchSentInbox(){
+        let response = {
+            inbox: [],
+            status: true
+        };
+        try{
+            response = await $.ajax({
+                url: this.fetchSentInboxURL.val(),
+                type: 'POST',
+                data: {
+                    userId: this.userID.val(),
+                },
+                dataType: 'json',
+            });
+        }catch (e) {
+            response.status = false;
+            console.log('Error while fetching sent inbox:', e)
+        }
+        return Promise.resolve(response)
+    }
     async deleteInbox(messageIds=''){
         let response = {status: true};
         try{
@@ -134,6 +156,31 @@ class Inbox{
         }catch (e) {
             response.status = false;
             console.log('Error while deleting inbox:', e)
+        }
+        return Promise.resolve(response)
+    }
+}
+
+class SpasNotification{
+    constructor() {
+        this.userID = $('#usr-id');
+        this.fetchNotiURL = $('#fetch-noti-url');
+    }
+
+    async fetchNotifications(){
+        let response = {status: true, threads: []};
+        try{
+            response = await $.ajax({
+                url: this.fetchNotiURL.val(),
+                type: 'POST',
+                data: {
+                    userId: this.userID.val(),
+                },
+                dataType: 'json',
+            });
+        }catch (e) {
+            response.status = false;
+            console.log('Error while fetching notifications:', e)
         }
         return Promise.resolve(response)
     }
@@ -162,22 +209,18 @@ const VueMethodMixins = {
             if(date.getTime() === date.getTime())
                 return date.toLocaleString(undefined, { hour: 'numeric', minute: 'numeric', hour12: true })
         },
-        getReadableDatetime(store_timestamp){
-            if(store_timestamp){
-                let _date = new Date(0);
-                _date.setSeconds(store_timestamp.seconds);
-                if(_date.getTime() === _date.getTime())
-                    return _date.toLocaleString(undefined, {
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true,
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    })
-            }
-            return 'No DateTime'
+        getReadableDatetime(timestamp){
+            let date = new Date(timestamp);
+            if(date.getTime() === date.getTime())
+                return date.toLocaleString(undefined, {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })
         }
     }
 };
