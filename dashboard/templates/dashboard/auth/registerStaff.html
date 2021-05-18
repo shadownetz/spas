@@ -85,13 +85,16 @@
                     <div class="form-label-group">
                         <label class="form-label">Role</label>
                     </div>
-                    <input type="text" v-model="staff.role" name="role" class="form-control form-control-lg" placeholder="Enter your faculty">
+                    <select class="form-control" name="role" id="" v-model="staff.role">
+                        <option value="DEFAULT">Default</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
                         <label class="form-label">Staff ID</label>
                     </div>
-                    <input type="text" v-model="staff.staffId" name="staffId" class="form-control form-control-lg" placeholder="Enter your registration number">
+                    <input type="text" v-model="staff.staffId" name="staffId" class="form-control form-control-lg" placeholder="Enter your assigned staff id">
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">

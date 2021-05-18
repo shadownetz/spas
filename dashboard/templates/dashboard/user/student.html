@@ -1,0 +1,138 @@
+{% extends 'dashboard/base.html' %}
+{% block title %} Students{% endblock %}
+{% block pageName %}Manage Students{% endblock %}
+
+{% block content %}
+    <div class="components-preview mx-auto px-3 pt-5">
+        <div class="nk-block nk-block-lg">
+            <div class="nk-block-head">
+                <div class="nk-block-head-content">
+                    <h4 class="nk-block-title">
+                        All Students
+                    </h4>
+                    <div class="nk-block-des">
+                        <p>Student marked as <span class="tb-status text-warning">inactive</span> cannot log into the system unless activated</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card card-preview">
+                <div class="card-inner">
+                    {% if students %}
+                        <table class="datatable-init nk-tb-list nk-tb-ulist" data-auto-responsive="false">
+                            <thead>
+                            <tr class="nk-tb-item nk-tb-head">
+                                <th class="nk-tb-col"><span class="sub-text">Student</span></th>
+                                <th class="nk-tb-col tb-col-mb"><span class="sub-text">REG No.</span></th>
+                                <th class="nk-tb-col tb-col-mb"><span class="sub-text">Department</span></th>
+                                <th class="nk-tb-col tb-col-md"><span class="sub-text">Phone</span></th>
+                                <th class="nk-tb-col tb-col-lg"><span class="sub-text">Faculty</span></th>
+                                <th class="nk-tb-col tb-col-lg"><span class="sub-text">Level</span></th>
+                                <th class="nk-tb-col tb-col-lg"><span class="sub-text">Address</span></th>
+                                <th class="nk-tb-col tb-col-md"><span class="sub-text">Status</span></th>
+                                <th class="nk-tb-col nk-tb-col-tools text-right"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for student in students %}
+                                <tr class="nk-tb-item">
+                                    <td class="nk-tb-col">
+                                        <div class="user-card">
+                                            <div class="user-avatar bg-dim-primary d-none d-sm-flex">
+                                                <div class="user-avatar user-avatar-custom">
+                                                    <img class="avatar" src="{{ student.avatar.url }}" alt="user image">
+                                                </div>
+                                            </div>
+                                            <div class="user-info">
+                                            <span class="tb-lead">
+                                                {{ student.name }}
+                                            </span>
+                                                <span>{{ student.email }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-mb">
+                                        <span>{{ student.studentprofile_set.first.reg_no }}</span>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-mb">
+                                        <span>{{ student.studentprofile_set.first.department }}</span>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-md"><span>{{ student.phone }}</span></td>
+                                    <td class="nk-tb-col tb-col-lg">
+                                        <span>{{ student.studentprofile_set.first.faculty }}</span>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-lg"><span>{{ student.studentprofile_set.first.level }}</span></td>
+                                    <td class="nk-tb-col tb-col-lg"><span>{{ student.address }}</span></td>
+                                    <td class="nk-tb-col tb-col-md">
+                                        {% if student.is_active %}
+                                            <span class="tb-status text-success">active</span>
+                                        {% else %}
+                                            <span class="tb-status text-warning">inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="nk-tb-col nk-tb-col-tools">
+                                        <ul class="nk-tb-actions gx-1">
+                                            <li>
+                                                <div class="dropdown">
+                                                    <a href="javascript:void(0)" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown">
+                                                        <em class="icon ni ni-more-h"></em>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <ul class="link-list-opt no-bdr">
+                                                            {% if student.is_active %}
+                                                                <li>
+                                                                    <a href="{% url 'home:dashboard:students' student.id %}">
+                                                                        <em class="icon ni ni-alert text-warning"></em><span>Mark as inactive</span>
+                                                                    </a>
+                                                                </li>
+                                                            {% else %}
+                                                                <li>
+                                                                    <a href="{% url 'home:dashboard:students' student.id %}">
+                                                                        <em class="icon ni ni-check-circle text-success"></em>
+                                                                        <span>Mark as active</span>
+                                                                    </a>
+                                                                </li>
+                                                            {% endif %}
+                                                            <li>
+                                                                <a class="spas-usr-del" href="{% url 'home:dashboard:students_delete' student.id %}">
+                                                                    <em class="icon ni ni-delete-fill"></em><span>Delete</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                            <li>
+                                                                <a href="javascript:void(0)">
+                                                                    <small class="icon ni ni-shield-star"></small>
+                                                                    <small>SPAS V1.0</small>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="d-flex justify-content-center">
+                            <p>Empty Students History</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('.spas-usr-del').on('click', function(event){
+            event.preventDefault();
+            const status = confirm("Continue with this operation?");
+            if(status){
+                window.location.href = $(this).attr('href')
+            }
+        })
+    </script>
+{% endblock %}

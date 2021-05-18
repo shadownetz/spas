@@ -350,3 +350,56 @@ def group_delete(request, groupId):
     except Group.DoesNotExist:
         pass
     return redirect('home:dashboard:groups')
+
+
+@login_required
+def students(request, student_id=''):
+    if student_id:
+        try:
+            student = User.objects.get(pk=student_id)
+            student.is_active = not student.is_active
+            student.save()
+            return redirect('home:dashboard:students')
+        except User.DoesNotExist:
+            pass
+    students_list = User.objects.filter(is_staff=False)
+    return render(request, 'dashboard/user/student.html', {
+        'students': students_list
+    })
+
+
+@login_required
+def students_delete(request, student_id):
+    try:
+        student = User.objects.get(pk=student_id)
+        student.delete()
+    except User.DoesNotExist:
+        pass
+    return redirect('home:dashboard:students')
+
+
+@login_required
+def staffs(request, staff_id=''):
+    if staff_id and request.user.is_staff and request.user.is_superuser:
+        try:
+            staff = User.objects.get(pk=staff_id)
+            staff.is_active = not staff.is_active
+            staff.save()
+            return redirect('home:dashboard:staffs')
+        except User.DoesNotExist:
+            pass
+    staffs_list = User.objects.filter(is_staff=True)
+    return render(request, 'dashboard/user/staff.html', {
+        'staffs': staffs_list
+    })
+
+
+@login_required
+def staffs_delete(request, staff_id):
+    if request.user.is_staff and request.user.is_superuser:
+        try:
+            staff = User.objects.get(pk=staff_id)
+            staff.delete()
+        except User.DoesNotExist:
+            pass
+    return redirect('home:dashboard:staffs')

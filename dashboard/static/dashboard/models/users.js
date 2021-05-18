@@ -17,7 +17,7 @@ function StaffModel(){
     this.email = '';
     this.phone = '';
     this.address = '';
-    this.role = '';
+    this.role = 'DEFAULT';
     this.staffId = '';
     this.password = '';
     this.repassword = '';

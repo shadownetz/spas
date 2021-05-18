@@ -24,4 +24,11 @@ urlpatterns = [
     path('groups/edit/<int:groupId>', group_edit, name='group_edit'),
     path('groups/delete/<int:groupId>', group_delete, name='group_delete'),
 
+    path('students/', students, name='students'),
+    path('students/<int:student_id>', students, name='students'),
+    path('students/delete/<int:student_id>', students_delete, name='students_delete'),
+
+    path('staffs/', staffs, name='staffs'),
+    path('staffs/<int:staff_id>', staffs, name='staffs'),
+    path('staffs/delete/<int:staff_id>', staffs_delete, name='staffs_delete'),
 ]

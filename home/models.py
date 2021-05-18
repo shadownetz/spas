@@ -44,9 +44,15 @@ class StudentProfile(models.Model):
     reg_no = models.CharField(_('registration number'), max_length=20, unique=True)
 
 
+ROLE_CHOICES = (
+    ('ADMIN', 'Admin'),
+    ('DEFAULT', 'Default')
+)
+
+
 class StaffProfile(models.Model):
     staff = models.ForeignKey(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=100, blank=True)
+    role = models.CharField(max_length=100, choices=ROLE_CHOICES, blank=True)
     staffId = models.CharField(_('Staff ID'), max_length=20, unique=True)
 
 #

@@ -1,0 +1,138 @@
+{% extends 'dashboard/base.html' %}
+{% block title %} Staffs{% endblock %}
+{% block pageName %}Manage Staffs{% endblock %}
+
+{% block content %}
+    <div class="components-preview mx-auto px-3 pt-5">
+        <div class="nk-block nk-block-lg">
+            <div class="nk-block-head">
+                <div class="nk-block-head-content">
+                    <h4 class="nk-block-title">
+                        All Staffs
+                    </h4>
+                    <div class="nk-block-des">
+                        <p>Actions can only be carried by roles of <span class="tb-status text-success">recognized</span> priviledges</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card card-preview">
+                <div class="card-inner">
+                    {% if staffs %}
+                        <table class="datatable-init nk-tb-list nk-tb-ulist" data-auto-responsive="false">
+                            <thead>
+                            <tr class="nk-tb-item nk-tb-head">
+                                <th class="nk-tb-col"><span class="sub-text">Staff</span></th>
+                                <th class="nk-tb-col tb-col-mb"><span class="sub-text">Staff ID</span></th>
+                                <th class="nk-tb-col tb-col-mb"><span class="sub-text">Role</span></th>
+                                <th class="nk-tb-col tb-col-md"><span class="sub-text">Phone</span></th>
+                                <th class="nk-tb-col tb-col-lg"><span class="sub-text">Address</span></th>
+                                <th class="nk-tb-col tb-col-md"><span class="sub-text">Status</span></th>
+                                <th class="nk-tb-col nk-tb-col-tools text-right"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for staff in staffs %}
+                                <tr class="nk-tb-item">
+                                    <td class="nk-tb-col">
+                                        <div class="user-card">
+                                            <div class="user-avatar bg-dim-primary d-none d-sm-flex">
+                                                {% if staff.avatar %}
+                                                    <div class="user-avatar user-avatar-custom">
+                                                        <img class="avatar" src="{{ staff.avatar.url }}" alt="user image">
+                                                    </div>
+                                                {% else %}
+                                                    <span>{{ staff.name|truncatechars:3 }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="user-info">
+                                            <span class="tb-lead">
+                                                {{ staff.name }}
+                                            </span>
+                                                <span>{{ staff.email }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-mb">
+                                        <span>{{ staff.staffprofile_set.first.staffId }}</span>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-mb">
+                                        <span>{{ staff.staffprofile_set.first.role }}</span>
+                                    </td>
+                                    <td class="nk-tb-col tb-col-md"><span>{{ staff.phone }}</span></td>
+                                    <td class="nk-tb-col tb-col-lg"><span>{{ staff.address }}</span></td>
+                                    <td class="nk-tb-col tb-col-md">
+                                        {% if staff.is_active %}
+                                            <span class="tb-status text-success">active</span>
+                                        {% else %}
+                                            <span class="tb-status text-warning">inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="nk-tb-col nk-tb-col-tools">
+                                        <ul class="nk-tb-actions gx-1">
+                                            {% if request.user.is_superuser %}
+                                                <li>
+                                                    <div class="dropdown">
+                                                        <a href="javascript:void(0)" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown">
+                                                            <em class="icon ni ni-more-h"></em>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <ul class="link-list-opt no-bdr">
+                                                                {% if staff.is_active %}
+                                                                    <li>
+                                                                        <a href="{% url 'home:dashboard:staffs' staff.id %}">
+                                                                            <em class="icon ni ni-alert text-warning"></em><span>Mark as inactive</span>
+                                                                        </a>
+                                                                    </li>
+                                                                {% else %}
+                                                                    <li>
+                                                                        <a href="{% url 'home:dashboard:staffs' staff.id %}">
+                                                                            <em class="icon ni ni-check-circle text-success"></em>
+                                                                            <span>Mark as active</span>
+                                                                        </a>
+                                                                    </li>
+                                                                {% endif %}
+                                                                <li>
+                                                                    <a class="spas-usr-del" href="{% url 'home:dashboard:staffs_delete' staff.id %}">
+                                                                        <em class="icon ni ni-delete-fill"></em><span>Delete</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="divider"></li>
+                                                                <li>
+                                                                    <a href="javascript:void(0)">
+                                                                        <small class="icon ni ni-shield-star"></small>
+                                                                        <small>SPAS V1.0</small>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="d-flex justify-content-center">
+                            <p>Empty Staffs History</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('.spas-usr-del').on('click', function(event){
+            event.preventDefault();
+            const status = confirm("Continue with this operation?");
+            if(status){
+                window.location.href = $(this).attr('href')
+            }
+        })
+    </script>
+{% endblock %}
