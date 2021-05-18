@@ -52,6 +52,7 @@ def register_student(request):
                 except Group.DoesNotExist:
                     new_group = Group()
                     new_group.context = 'DEPARTMENT'
+                    new_group.default = True
                     new_group.title = request.POST['department'].upper()
                     new_group.created_by = superadmin
                     new_group.save()
@@ -66,6 +67,7 @@ def register_student(request):
                     new_group = Group()
                     new_group.title = request.POST['faculty'].upper()
                     new_group.context = 'FACULTY'
+                    new_group.default = True
                     new_group.created_by = superadmin
                     new_group.save()
                     new_group.members.add(user)
@@ -78,6 +80,7 @@ def register_student(request):
                 except Group.DoesNotExist:
                     new_group = Group()
                     new_group.context = 'LEVEL'
+                    new_group.default = True
                     new_group.title = request.POST['level']
                     new_group.created_by = superadmin
                     new_group.save()
@@ -289,3 +292,13 @@ def inbox_content(request, inbox_id):
         })
     return redirect('home:dashboard:inbox')
 
+
+@login_required
+def groups(request):
+    default_groups = Group.objects.filter(default=True)
+    custom_groups = Group.objects.filter(created_by=request.user)
+    all_groups = [group for group in default_groups]
+    all_groups = all_groups + [c_group for c_group in custom_groups]
+    return render(request, 'dashboard/group/group.html', {
+        'groups': all_groups
+    })

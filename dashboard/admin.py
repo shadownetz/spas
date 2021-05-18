@@ -5,12 +5,12 @@ from .models import (Group, MessageState, Attachment, MessageThread, Message)
 class GroupAdmin(admin.ModelAdmin):
     model = Group
     list_display = (
-        'id', 'title', 'context', 'created_by', 'created_at', 'updated_at',
+        'id', 'title', 'default', 'context', 'created_by', 'created_at', 'updated_at',
         'get_members'
     )
     fieldsets = (
         (None, {
-            'fields': ('title', 'context', 'members', 'created_by')
+            'fields': ('title', 'default', 'context', 'members', 'created_by')
         }),
     )
     ordering = ('created_at',)

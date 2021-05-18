@@ -18,4 +18,6 @@ urlpatterns = [
     path('api/inbox/delete', delete_user_inbox, name='delete_inbox'),
     path('api/inbox/sent', get_user_sent_inbox, name='fetch_sent_inbox'),
     path('api/notifications/fetch', get_notifications, name='fetch_notifications'),
+
+    path('groups', groups, name='groups')
 ]
