@@ -9,7 +9,7 @@
                 <div class="nk-block-head-content">
                     <h4 class="nk-block-title">
                         Message Groups
-                        <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm">
+                        <a href="{% url 'home:dashboard:group_add' %}" class="btn btn-outline-primary btn-sm">
                             <em class="ni ni-plus"></em> Add a new group
                         </a>
                     </h4>
@@ -60,35 +60,37 @@
                                     </td>
                                     <td class="nk-tb-col nk-tb-col-tools">
                                         <ul class="nk-tb-actions gx-1">
-                                            <li>
-                                                <div class="dropdown">
-                                                    <a href="javascript:void(0)" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown">
-                                                        <em class="icon ni ni-more-h"></em>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <ul class="link-list-opt no-bdr">
-                                                            <li>
-                                                                <a href="javascript:void(0)">
-                                                                    <em class="icon ni ni-edit"></em>
-                                                                    <span>Modify</span></a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0)">
-                                                                    <em class="icon ni ni-delete"></em>
-                                                                    <span>Delete</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="divider"></li>
-                                                            <li>
-                                                                <a href="javascript:void(0)">
-                                                                    <small class="icon ni ni-shield-star"></small>
-                                                                    <small>SPAS V1.0</small>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
+                                            {% if not group.default %}
+                                                <li>
+                                                    <div class="dropdown">
+                                                        <a href="javascript:void(0)" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown">
+                                                            <em class="icon ni ni-more-h"></em>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <ul class="link-list-opt no-bdr">
+                                                                <li>
+                                                                    <a href="{% url 'home:dashboard:group_edit' group.id %}">
+                                                                        <em class="icon ni ni-edit"></em>
+                                                                        <span>Modify</span></a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="{% url 'home:dashboard:group_delete' group.id %}" class="spas-group-del">
+                                                                        <em class="icon ni ni-delete"></em>
+                                                                        <span>Delete</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="divider"></li>
+                                                                <li>
+                                                                    <a href="javascript:void(0)">
+                                                                        <small class="icon ni ni-shield-star"></small>
+                                                                        <small>SPAS V1.0</small>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
+                                                </li>
+                                            {% endif %}
                                         </ul>
                                     </td>
                                 </tr>
@@ -104,4 +106,16 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('.spas-group-del').on('click', function(event){
+            event.preventDefault();
+            const status = confirm("Continue with this operation?");
+            if(status){
+                window.location.href = $(this).attr('href')
+            }
+        })
+    </script>
 {% endblock %}

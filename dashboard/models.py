@@ -19,11 +19,11 @@ GROUP_CONTEXTS = [
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=50, blank=True)
+    title = models.CharField(max_length=50)
     context = models.CharField(max_length=50, blank=True, choices=GROUP_CONTEXTS)
     default = models.BooleanField(default=False)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='member_group')
-    created_by = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

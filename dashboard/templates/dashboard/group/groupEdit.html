@@ -1,0 +1,74 @@
+{% extends 'dashboard/base.html' %}
+{% block title %} Modify Group{% endblock %}
+{% block pageName %}Update Group{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center components-preview mx-auto pt-5">
+        <div class="nk-block col-5">
+            <div class="nk-block-head">
+                <div class="nk-block-head-content">
+                    <h4 class="title nk-block-title">Modify inbox group</h4>
+                    {#                    <div class="nk-block-des">#}
+                    {#                        <p>#}
+                    {#                            Create a custom message group#}
+                    {#                        </p>#}
+                    {#                    </div>#}
+                </div>
+            </div>
+            <div class="card card-preview">
+                <div class="card-inner">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="preview-block">
+                        <span class="preview-title-lg overline-title">
+                            Update group
+                        </span>
+                            {% if group_form.errors %}
+                                <div class="alert alert-info">
+                                    <ul>
+                                        {% for error in group_form.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            <div class="row gy-4">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_title">Group Title</label>
+                                        <div class="form-control-wrap">
+                                            <div class="form-icon form-icon-left">
+                                                <em class="icon ni ni-user"></em>
+                                            </div>
+                                            {{ group_form.title }}
+                                            {#                                        <input type="text" class="form-control" id="default-03" placeholder="Group title">#}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Members</label>
+                                        <div class="form-control-wrap">
+                                            {{ group_form.members }}
+                                            {#                                        <select class="form-select form-control form-control-lg" data-search="on">#}
+                                            {#                                            <option value="default_option">Default Option</option>#}
+                                            {#                                            <option value="option_select_name">Option select name</option>#}
+                                            {#                                            <option value="option_select_name">Option select name</option>#}
+                                            {#                                        </select>#}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <em class="ni ni-plus-circle"></em> Update
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

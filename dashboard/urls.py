@@ -19,5 +19,9 @@ urlpatterns = [
     path('api/inbox/sent', get_user_sent_inbox, name='fetch_sent_inbox'),
     path('api/notifications/fetch', get_notifications, name='fetch_notifications'),
 
-    path('groups', groups, name='groups')
+    path('groups', groups, name='groups'),
+    path('groups/create', group_add, name='group_add'),
+    path('groups/edit/<int:groupId>', group_edit, name='group_edit'),
+    path('groups/delete/<int:groupId>', group_delete, name='group_delete'),
+
 ]

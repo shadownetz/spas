@@ -4,7 +4,7 @@ from .models import (Group, Message, MessageState, Attachment, MessageThread)
 from django.db import IntegrityError
 from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
-# from .forms import MessageForm
+from .forms import CreateGroupForm
 
 
 @login_required
@@ -302,3 +302,51 @@ def groups(request):
     return render(request, 'dashboard/group/group.html', {
         'groups': all_groups
     })
+
+
+@login_required
+def group_add(request):
+    new_group_form = CreateGroupForm()
+    if request.method == 'POST':
+        new_group_form = CreateGroupForm(request.POST, request=request)
+        if new_group_form.is_valid():
+            new_group_form.save()
+            return redirect('home:dashboard:groups')
+    return render(request, 'dashboard/group/groupAdd.html', {
+        'group_form': new_group_form
+    })
+
+
+@login_required
+def group_edit(request, groupId):
+    try:
+        group = Group.objects.get(pk=groupId)
+        if group.default:
+            raise Group.DoesNotExist
+        new_group_form = CreateGroupForm(instance=group)
+    except Group.DoesNotExist:
+        return redirect('home:dashboard:groups')
+
+    if request.method == 'POST':
+        try:
+            group = Group.objects.get(pk=groupId)
+            if not group.default:
+                new_group_form = CreateGroupForm(request.POST, instance=group, request=request)
+                if new_group_form.is_valid():
+                    new_group_form.save()
+                    return redirect('home:dashboard:groups')
+        except Group.DoesNotExist:
+            return redirect('home:dashboard:groups')
+    return render(request, 'dashboard/group/groupEdit.html', {
+        'group_form': new_group_form
+    })
+
+
+@login_required
+def group_delete(request, groupId):
+    try:
+        group = Group.objects.get(pk=groupId)
+        group.delete()
+    except Group.DoesNotExist:
+        pass
+    return redirect('home:dashboard:groups')
