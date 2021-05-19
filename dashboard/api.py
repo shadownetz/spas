@@ -48,18 +48,20 @@ def get_user_inbox(request):
                     user_inboxes = []
             else:
                 user_inboxes = Message.objects.filter(receivers=user)
-            for inbox in user_inboxes:
-                response['inbox'].append({
-                    'is_staff': inbox.sender.is_staff,
-                    'avatar': inbox.sender.avatar.url,
-                    'name': inbox.sender.name,
-                    'is_read': inbox.get_message_state(user),
-                    'subject': inbox.subject,
-                    'content': inbox.content,
-                    'has_attachments': inbox.has_attachments(),
-                    'timestamp': inbox.created_at,
-                    'messageId': inbox.id
-                })
+            if len(user_inboxes) > 0:
+                for inbox in user_inboxes:
+                    if inbox.sender:
+                        response['inbox'].append({
+                        'is_staff': inbox.sender.is_staff,
+                        'avatar': inbox.sender.avatar.url,
+                        'name': inbox.sender.name,
+                        'is_read': inbox.get_message_state(user),
+                        'subject': inbox.subject,
+                        'content': inbox.content,
+                        'has_attachments': inbox.has_attachments(),
+                        'timestamp': inbox.created_at,
+                        'messageId': inbox.id
+                    })
         except User.DoesNotExist:
             pass
     return JsonResponse(data=response)

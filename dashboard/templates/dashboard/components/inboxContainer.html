@@ -17,14 +17,16 @@
     <div class="nk-ibx">
         <!-- Side Navigation -->
         <div class="nk-ibx-aside" data-content="inbox-aside" data-toggle-overlay="true" data-toggle-screen="lg">
-            <div class="nk-ibx-head">
-                <div class="mr-n1">
-                    <a href="{% url 'home:dashboard:inbox_new' %}" class="link link-text">
-                        <em class="icon-circle icon ni ni-plus"></em>
-                        <span>Compose SMS</span>
-                    </a>
+            {% if request.user.is_staff %}
+                <div class="nk-ibx-head">
+                    <div class="mr-n1">
+                        <a href="{% url 'home:dashboard:inbox_new' %}" class="link link-text">
+                            <em class="icon-circle icon ni ni-plus"></em>
+                            <span>Compose SMS</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             <div class="nk-ibx-nav" data-simplebar>
                 <ul class="nk-ibx-menu">
                     <li>
@@ -40,13 +42,13 @@
                             <span class="nk-ibx-menu-text">Sent</span>
                         </a>
                     </li>
-{#                    <li>#}
-{#                        <a class="nk-ibx-menu-item" href="javascript:void(0)">#}
-{#                            <em class="icon ni ni-trash"></em>#}
-{#                            <span class="nk-ibx-menu-text">Trash</span>#}
-{#                            <span class="badge badge-pill badge-danger badge-dim">8</span>#}
-{#                        </a>#}
-{#                    </li>#}
+                    {#                    <li>#}
+                    {#                        <a class="nk-ibx-menu-item" href="javascript:void(0)">#}
+                    {#                            <em class="icon ni ni-trash"></em>#}
+                    {#                            <span class="nk-ibx-menu-text">Trash</span>#}
+                    {#                            <span class="badge badge-pill badge-danger badge-dim">8</span>#}
+                    {#                        </a>#}
+                    {#                    </li>#}
                 </ul>
                 <div class="nk-ibx-nav-head">
                     <h6 class="title">Groups</h6>

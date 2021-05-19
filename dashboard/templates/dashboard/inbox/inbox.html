@@ -96,7 +96,7 @@
                             <div class="nk-ibx-context">
                             <span class="nk-ibx-context-text">
                                 <span class="heading">[[ibx.subject]]</span>
-                                <small v-html="ibx.content" class="text-truncate"></small>
+{#                                <small v-html="ibx.content" class="text-truncate"></small>#}
                             </span>
                             </div>
                         </div>
@@ -127,9 +127,16 @@
                 </div>
             </template>
             <template v-else>
-                <div class="d-flex justify-content-center py-4">
-                    <h6>Your inbox is empty <em class="ni ni-inbox"></em></h6>
-                </div>
+                {% if request.user.is_staff %}
+                    <div class="col-12 text-center py-4">
+                        <h6>Your inbox is empty <em class="ni ni-inbox"></em></h6>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center py-4">
+                        <h6>Your inbox is empty <em class="ni ni-inbox"></em></h6>
+                        <p>When a staff sends you a message it will show up here</p>
+                    </div>
+                {% endif %}
             </template>
         </div>
 
@@ -183,7 +190,7 @@
                         if(isNaN(this.refresh_message_interval)){
                             this.refresh_message_interval = setInterval(()=>{
                                 this.loadInbox()
-                            }, 3000)
+                            }, 10000)
                         }
                     },
                     async deleteInbox(msgId=null){

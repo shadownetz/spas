@@ -10,7 +10,52 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 @login_required
 def index(request):
-    return render(request, 'dashboard/index.html')
+    response = {
+        'inbox': {
+            'count': 0,
+            'read': 0,
+            'unread': 0,
+            'sent': 0
+        },
+        'sms': {
+            'count': 0,
+            'threads': 0,
+            'groups': 0
+        },
+        'users': {
+            'count': 0,
+            'staffs': 0,
+            'students': 0,
+            'admins': 0
+        }
+    }
+    all_sms = Message.objects.all()
+    all_sms_threads = MessageThread.objects.all()
+    all_sms_groups = Group.objects.all()
+    users = User.objects.all()
+
+    user_inbox = all_sms.filter(receivers=request.user)
+    user_msg_states = [x.get_message_state(request.user) for x in user_inbox]
+    user_read_msg_states = list(filter(lambda x: x is True, user_msg_states))
+    user_unread_msg_states = len(user_msg_states) - len(user_read_msg_states)
+    user_sent_inbox = all_sms.filter(sender=request.user)
+
+    response['inbox']['count'] = user_inbox.count()
+    response['inbox']['sent'] = user_sent_inbox.count()
+    if len(user_msg_states) > 0:
+        response['inbox']['read'] = len(user_read_msg_states)
+        response['inbox']['unread'] = user_unread_msg_states
+
+    response['sms']['count'] = all_sms.count()
+    response['sms']['threads'] = all_sms_threads.count()
+    response['sms']['groups'] = all_sms_groups.count()
+
+    response['users']['count'] = users.count()
+    response['users']['staffs'] = users.filter(is_staff=True).count()
+    response['users']['students'] = users.filter(is_staff=False).count()
+    response['users']['admins'] = StaffProfile.objects.filter(role='ADMIN').count()
+
+    return render(request, 'dashboard/index.html', response)
 
 
 def register_student(request):
@@ -241,6 +286,7 @@ def inbox_create(request):
 
 @login_required
 def inbox_content(request, inbox_id):
+    messages = Message.objects.filter(receivers=request.user)
     if request.method == 'POST':
         parent_message_id = request.POST['parentMessageID']
         attachment_ids = request.POST['attachments'].split(',')
@@ -291,6 +337,7 @@ def inbox_content(request, inbox_id):
     else:
         return render(request, 'dashboard/inbox/inboxContent.html', {
             'parent_message': parent_message,
+            'messages': messages,
             'message_groups': user_message_groups
         })
     return redirect('home:dashboard:inbox')

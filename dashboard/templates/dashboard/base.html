@@ -56,22 +56,24 @@
                                     <span class="nk-menu-icon"><em class="icon ni ni-inbox"></em></span>
                                 </a>
                             </li>
-                            <li class="nk-menu-hr"></li>
-                            <li class="nk-menu-item">
-                                <a href="{% url 'home:dashboard:groups' %}" class="nk-menu-link" title="Message Groups">
-                                    <span class="nk-menu-icon"><em class="icon ni ni-template"></em></span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{% url 'home:dashboard:students' %}" class="nk-menu-link" title="Students">
-                                    <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{% url 'home:dashboard:staffs' %}" class="nk-menu-link" title="Staffs">
-                                    <span class="nk-menu-icon"><em class="icon ni ni-user-list"></em></span>
-                                </a>
-                            </li>
+                            {% if request.user.is_staff %}
+                                <li class="nk-menu-hr"></li>
+                                <li class="nk-menu-item">
+                                    <a href="{% url 'home:dashboard:groups' %}" class="nk-menu-link" title="Message Groups">
+                                        <span class="nk-menu-icon"><em class="icon ni ni-template"></em></span>
+                                    </a>
+                                </li>
+                                <li class="nk-menu-item">
+                                    <a href="{% url 'home:dashboard:students' %}" class="nk-menu-link" title="Students">
+                                        <span class="nk-menu-icon"><em class="icon ni ni-users"></em></span>
+                                    </a>
+                                </li>
+                                <li class="nk-menu-item">
+                                    <a href="{% url 'home:dashboard:staffs' %}" class="nk-menu-link" title="Staffs">
+                                        <span class="nk-menu-icon"><em class="icon ni ni-user-list"></em></span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
                     <div class="nk-sidebar-footer">
@@ -300,7 +302,7 @@
                     if(isNaN(this.refreshInterval)){
                         this.refreshInterval = setInterval(()=>{
                             this.loadNotifications()
-                        }, 3000)
+                        }, 10000)
                     }
                 }
             },

@@ -1,8 +1,117 @@
 {% extends 'dashboard/base.html' %}
 {% block title %}SMS Portal for Academic Student{% endblock %}
+{% block pageName %} Dashboard {% endblock %}
 
 {% block content %}
-    <div>
-        <h2>Dashboard</h2>
+    <div class="col-12 pt-4 px-4">
+        <div class="nk-block-head nk-block-head-sm">
+            <div class="nk-block-between">
+                <div class="nk-block-head-content">
+                    <h3 class="nk-block-title page-title">SPAS Dashboard</h3>
+                    <div class="nk-block-des text-soft">
+                        <p>Welcome once again {{ request.user.name }}</p>
+                    </div>
+                </div>
+                <div class="nk-block-head-content">
+                    <div class="toggle-wrap nk-block-tools-toggle">
+                        <div class="toggle-expand-content" data-content="pageMenu">
+                            <ul class="nk-block-tools g-3">
+                                <li>
+                                    <a href="{% url 'home:index' %}" class="btn btn-icon btn-primary">
+                                        <em class="icon ni ni-home"></em>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nk-block">
+            <div class="row g-gs {% if not request.user.is_staff%} justify-content-center{% endif %}">
+                <div class="col-sm-6 col-lg-4 col-xxl-3">
+                    <div class="card card-bordered">
+                        <div class="card-inner">
+                            <div class="team">
+                                <div class="user-card user-card-s2">
+                                    <div class="user-avatar md bg-primary"><span>{{ inbox.count }}</span>
+                                    </div>
+                                    <div class="user-info">
+                                        <h6>Inbox</h6>
+                                        <span class="sub-text">on spas</span>
+                                    </div>
+                                </div>
+                                <div class="team-details">
+                                    <p>Inbox Statistics</p>
+                                </div>
+                                <ul class="team-statistics">
+                                    <li><span>{{ inbox.read }}</span><span>Read</span></li>
+                                    <li><span>{{ inbox.unread }}</span><span>Unread</span></li>
+                                    <li><span>{{ inbox.sent }}</span><span>Sent</span></li>
+                                </ul>
+                                <div class="team-view">
+                                    <a href="{% url 'home:dashboard:inbox' %}" class="btn btn-round btn-outline-light w-150px"><span>Go to Inbox</span></a>
+                                    <a href="{% url 'home:dashboard:inbox_new' %}" class="btn btn-round btn-outline-light w-150px"><span>Send a new SMS</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if request.user.is_staff %}
+                    <div class="col-sm-6 col-lg-4 col-xxl-3">
+                        <div class="card card-bordered">
+                            <div class="card-inner">
+                                <div class="team">
+                                    <div class="user-card user-card-s2">
+                                        <div class="user-avatar md bg-primary"><span>{{ sms.count }}</span>
+                                        </div>
+                                        <div class="user-info">
+                                            <h6>Total SMS Count <sup data-toggle="tooltip" title="only visible to staffs" class="text-muted"><i class="ni ni-eye-off"></i></sup></h6>
+                                            <span class="sub-text">on spas</span>
+                                        </div>
+                                    </div>
+                                    <div class="team-details">
+                                        <p>SMS Statistics</p>
+                                    </div>
+                                    <ul class="team-statistics">
+                                        <li><span>{{ sms.threads }}</span><span>SMS Threads</span></li>
+                                        <li><span>{{ sms.groups }}</span><span>SMS Groups</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-xxl-3">
+                        <div class="card card-bordered">
+                            <div class="card-inner">
+                                <div class="team">
+                                    <div class="user-card user-card-s2">
+                                        <div class="user-avatar md bg-primary"><span>{{ users.count }}</span>
+                                        </div>
+                                        <div class="user-info">
+                                            <h6>Users <sup data-toggle="tooltip" title="only visible to staffs" class="text-muted"><i class="ni ni-eye-off"></i></sup></h6>
+                                            <span class="sub-text">on spas</span>
+                                        </div>
+                                    </div>
+                                    <div class="team-details">
+                                        <p>Users Statistics</p>
+                                    </div>
+                                    <ul class="team-statistics">
+                                        <li><span>{{ users.staffs }}</span><span>Staffs</span></li>
+                                        <li><span>{{ users.students }}</span><span>Students</span></li>
+                                        <li><span>{{ users.admins }}</span><span>Admin Role</span></li>
+                                    </ul>
+                                    <div class="team-view">
+                                        <a href="{% url 'home:dashboard:staffs' %}" class="btn btn-round btn-outline-light w-150px"><span>All Staffs</span></a>
+                                        <a href="{% url 'home:dashboard:students' %}" class="btn btn-round btn-outline-light w-150px"><span>All Students</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}
