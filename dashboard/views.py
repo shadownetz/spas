@@ -4,7 +4,8 @@ from .models import (Group, Message, MessageState, Attachment, MessageThread)
 from django.db import IntegrityError
 from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
-from .forms import CreateGroupForm
+from .forms import (PasswordChangeForm, CreateGroupForm, AvatarUpdateForm, UserUpdateForm, StaffProfileUpdateForm, StudentProfileUpdateForm)
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 @login_required
@@ -173,6 +174,7 @@ def inbox(request):
 
 
 @login_required
+@staff_member_required
 def sent_inbox(request):
     user_message_groups = Group.objects.filter(members=request.user)
     return render(request, 'dashboard/inbox/inboxSent.html', {
@@ -181,6 +183,7 @@ def sent_inbox(request):
 
 
 @login_required
+@staff_member_required
 def inbox_create(request):
     messages = Message.objects.filter(receivers=request.user)
     user_message_groups = Group.objects.filter(members=request.user)
@@ -294,6 +297,7 @@ def inbox_content(request, inbox_id):
 
 
 @login_required
+@staff_member_required
 def groups(request):
     default_groups = Group.objects.filter(default=True)
     custom_groups = Group.objects.filter(created_by=request.user)
@@ -305,6 +309,7 @@ def groups(request):
 
 
 @login_required
+@staff_member_required
 def group_add(request):
     new_group_form = CreateGroupForm()
     if request.method == 'POST':
@@ -318,6 +323,7 @@ def group_add(request):
 
 
 @login_required
+@staff_member_required
 def group_edit(request, groupId):
     try:
         group = Group.objects.get(pk=groupId)
@@ -343,6 +349,7 @@ def group_edit(request, groupId):
 
 
 @login_required
+@staff_member_required
 def group_delete(request, groupId):
     try:
         group = Group.objects.get(pk=groupId)
@@ -353,6 +360,7 @@ def group_delete(request, groupId):
 
 
 @login_required
+@staff_member_required
 def students(request, student_id=''):
     if student_id:
         try:
@@ -369,6 +377,7 @@ def students(request, student_id=''):
 
 
 @login_required
+@staff_member_required
 def students_delete(request, student_id):
     try:
         student = User.objects.get(pk=student_id)
@@ -379,6 +388,7 @@ def students_delete(request, student_id):
 
 
 @login_required
+@staff_member_required
 def staffs(request, staff_id=''):
     if staff_id and request.user.is_staff and request.user.is_superuser:
         try:
@@ -395,6 +405,7 @@ def staffs(request, staff_id=''):
 
 
 @login_required
+@staff_member_required
 def staffs_delete(request, staff_id):
     if request.user.is_staff and request.user.is_superuser:
         try:
@@ -407,4 +418,53 @@ def staffs_delete(request, staff_id):
 
 @login_required
 def profile(request):
-    return render(request, 'dashboard/user/updateProfile.html')
+    user = User.objects.get(pk=request.user.id)
+    avatar_form = AvatarUpdateForm()
+    user_form = UserUpdateForm(instance=request.user)
+    student_profile_form = StudentProfileUpdateForm()
+    staff_profile_form = StaffProfileUpdateForm()
+    password_form = PasswordChangeForm()
+    try:
+        if request.user.is_staff:
+            staff_profile = StaffProfile.objects.get(staff=request.user)
+            staff_profile_form = StaffProfileUpdateForm(instance=staff_profile)
+        else:
+            student_profile = StudentProfile.objects.get(student=request.user)
+            student_profile_form = StudentProfileUpdateForm(instance=student_profile)
+    except (StudentProfile.DoesNotExist, StaffProfile.DoesNotExist):
+        pass
+
+    if request.method == 'POST':
+        avatar_form = AvatarUpdateForm(request.POST, request.FILES, instance=request.user)
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        password_form = PasswordChangeForm(request.POST, instance=request.user)
+        if avatar_form.is_valid():
+            avatar_form.save()
+        if user_form.is_valid():
+            user_form.save()
+        if password_form.is_valid():
+            user.set_password(password_form.cleaned_data['password'])
+            user.save()
+        try:
+            if request.user.is_staff:
+                staff_profile = StaffProfile.objects.get(staff=request.user)
+                staff_profile_form = StaffProfileUpdateForm(request.POST, instance=staff_profile)
+                if staff_profile_form.is_valid():
+                    staff_profile_form.save()
+            else:
+                student_profile = StudentProfile.objects.get(student=request.user)
+                student_profile_form = StudentProfileUpdateForm(request.POST, instance=student_profile)
+                if student_profile_form.is_valid():
+                    student_profile_form.save()
+        except (StudentProfile.DoesNotExist, StaffProfile.DoesNotExist):
+            pass
+
+        return redirect('home:dashboard:profile')
+
+    return render(request, 'dashboard/user/updateProfile.html', {
+        'avatarForm': avatar_form,
+        'userForm': user_form,
+        'studentProfileForm': student_profile_form,
+        'staffProfileForm': staff_profile_form,
+        'passwordForm': password_form
+    })

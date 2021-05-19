@@ -1,5 +1,15 @@
 {% extends 'dashboard/base.html' %}
 {% block title %} Update Profile {% endblock %}
+{% block pageName %} Profile {% endblock %}
+
+{% block style %}
+    <style>
+        #id_avatar{
+            visibility: hidden;
+            position: absolute;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <div class="nk-block">
@@ -28,8 +38,8 @@
                             </div>
                             <div class="data-item" data-toggle="modal" data-target="#profile-edit">
                                 <div class="data-col">
-                                    <span class="data-label">Full Name</span>
-                                    <span class="data-value">Abu Bin Ishtiyak</span>
+                                    <span class="data-label">Name</span>
+                                    <span class="data-value">{{ request.user.name }}</span>
                                 </div>
                                 <div class="data-col data-col-end">
                                     <span class="data-more">
@@ -39,39 +49,77 @@
                             </div>
                             <div class="data-item" data-toggle="modal" data-target="#profile-edit">
                                 <div class="data-col">
-                                    <span class="data-label">Display Name</span>
-                                    <span class="data-value">Ishtiyak</span>
+                                    <span class="data-label">Email</span>
+                                    <span class="data-value">{{ request.user.email }}</span>
                                 </div>
                                 <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
                             </div>
                             <div class="data-item">
                                 <div class="data-col">
-                                    <span class="data-label">Email</span>
-                                    <span class="data-value">info@softnio.com</span>
+                                    <span class="data-label">Password</span>
+                                    <span class="data-value">*********</span>
                                 </div>
                                 <div class="data-col data-col-end"><span class="data-more disable"><em class="icon ni ni-lock-alt"></em></span></div>
                             </div>
                             <div class="data-item" data-toggle="modal" data-target="#profile-edit">
                                 <div class="data-col">
                                     <span class="data-label">Phone Number</span>
-                                    <span class="data-value text-soft">Not add yet</span>
+                                    <span class="data-value text-soft">{{ request.user.phone }}</span>
                                 </div>
                                 <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
                             </div>
                             <div class="data-item" data-toggle="modal" data-target="#profile-edit">
                                 <div class="data-col">
-                                    <span class="data-label">Date of Birth</span>
-                                    <span class="data-value">29 Feb, 1986</span>
-                                </div>
-                                <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
-                            </div>
-                            <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
-                                <div class="data-col">
                                     <span class="data-label">Address</span>
-                                    <span class="data-value">2337 Kildeer Drive,<br>Kentucky, Canada</span>
+                                    <span class="data-value">{{ request.user.address }}</span>
                                 </div>
                                 <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
                             </div>
+                            {% if not request.user.is_staff %}
+                                <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
+                                    <div class="data-col">
+                                        <span class="data-label">Faculty</span>
+                                        <span class="data-value">{{ request.user.studentprofile_set.first.faculty }}</span>
+                                    </div>
+                                    <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
+                                </div>
+                                <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
+                                    <div class="data-col">
+                                        <span class="data-label">Department</span>
+                                        <span class="data-value">{{ request.user.studentprofile_set.first.department }}</span>
+                                    </div>
+                                    <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
+                                </div>
+                                <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
+                                    <div class="data-col">
+                                        <span class="data-label">Level</span>
+                                        <span class="data-value">{{ request.user.studentprofile_set.first.level }}</span>
+                                    </div>
+                                    <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
+                                </div>
+                                <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
+                                    <div class="data-col">
+                                        <span class="data-label">Registration Number</span>
+                                        <span class="data-value">{{ request.user.studentprofile_set.first.reg_no }}</span>
+                                    </div>
+                                    <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
+                                </div>
+                            {% else %}
+                                <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
+                                    <div class="data-col">
+                                        <span class="data-label">Role</span>
+                                        <span class="data-value">{{ request.user.staffprofile_set.first.role }}</span>
+                                    </div>
+                                    <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
+                                </div>
+                                <div class="data-item" data-toggle="modal" data-target="#profile-edit" data-tab-target="#address">
+                                    <div class="data-col">
+                                        <span class="data-label">Staff ID</span>
+                                        <span class="data-value">{{ request.user.staffprofile_set.first.staffId }}</span>
+                                    </div>
+                                    <div class="data-col data-col-end"><span class="data-more"><em class="icon ni ni-forward-ios"></em></span></div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -84,7 +132,7 @@
                                     <div class="user-avatar user-avatar-custom">
                                         <img class="avatar" src="{{ request.user.avatar.url }}" alt="user image">
                                     </div>
-{#                                    <span>AB</span>#}
+                                    {#                                    <span>AB</span>#}
                                 </div>
                                 <div class="user-info">
                                     <span class="lead-text">{{ request.user.name }}</span>
@@ -99,12 +147,18 @@
                                             <ul class="link-list-opt no-bdr">
                                                 <li>
                                                     <a href="javascript:void(0)">
-                                                        <em class="icon ni ni-camera-fill"></em>
-                                                        <span>Change Photo</span>
+                                                        <form method="post" id="update-avatar-form" enctype="multipart/form-data">
+                                                            {% csrf_token %}
+                                                            <label for="id_avatar" class="m-0" style="position: relative">
+                                                                {{ avatarForm.avatar }}
+                                                                <em class="icon ni ni-camera-fill"></em>
+                                                                <span class="ml-1">Change Photo</span>
+                                                            </label>
+                                                        </form>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="javascript:void(0)">
+                                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#profile-edit">
                                                         <em class="icon ni ni-edit-fill"></em>
                                                         <span>Update Profile</span>
                                                     </a>
@@ -142,72 +196,158 @@
 
 {% block ext-content %}
     <div class="modal fade" tabindex="-1" role="dialog" id="profile-edit">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <a href="user-profile-regular.html#" class="close" data-dismiss="modal">
-                    <em class="icon ni ni-cross-sm"></em>
-                </a>
-                <div class="modal-body modal-body-lg">
-                    <h5 class="title">Update Profile</h5>
-                    <ul class="nk-nav nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="user-profile-regular.html#personal">Personal</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="user-profile-regular.html#address">Address</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="personal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <a href="javascript:void(0)" class="close" data-dismiss="modal">
+                <em class="icon ni ni-cross-sm"></em>
+            </a>
+            <div class="modal-body modal-body-lg">
+                <h5 class="title">Update Profile</h5>
+                <ul class="nk-nav nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#personal">Personal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#security">Security</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="personal">
+                        <form method="post">
+                            {% csrf_token %}
                             <div class="row gy-4">
                                 <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="full-name">Full Name</label><input type="text" class="form-control form-control-lg" id="full-name" value="Abu Bin Ishtiyak" placeholder="Enter Full name"></div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_name">Name</label>
+                                        {{ userForm.name }}
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="display-name">Display Name</label><input type="text" class="form-control form-control-lg" id="display-name" value="Ishtiyak" placeholder="Enter display name"></div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_email">Email</label>
+                                        {{ userForm.email }}
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="phone-no">Phone Number</label><input type="text" class="form-control form-control-lg" id="phone-no" value="+880" placeholder="Phone Number"></div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_phone">Phone Number</label>
+                                        {{ userForm.phone }}
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="birth-day">Date of Birth</label><input type="text" class="form-control form-control-lg date-picker" id="birth-day" placeholder="Enter your name"></div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_address">Address</label>
+                                        {{ userForm.address }}
+                                        {#                                        <label class="form-label" for="birth-day">Date of Birth</label>#}
+                                        {#                                        <input type="text" class="form-control form-control-lg date-picker" id="birth-day" placeholder="Enter your name">#}
+                                    </div>
                                 </div>
+                                {% if request.user.is_staff %}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="id_role">Role</label>
+                                            {{ staffProfileForm.role }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="id_staffid">Staff ID</label>
+                                            {{ staffProfileForm.staffId }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="id_faculty">Faculty</label>
+                                            {{ studentProfileForm.faculty }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="id_department">Department</label>
+                                            {{ studentProfileForm.department }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="id_level">Level</label>
+                                            {{ studentProfileForm.level }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="id_reg_no">Registration Number</label>
+                                            {{ studentProfileForm.reg_no }}
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="col-12">
-                                    <div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input" id="latest-sale"><label class="custom-control-label" for="latest-sale">Use full name to display </label></div>
+                                    {#                                    <div class="custom-control custom-switch"><input type="checkbox" class="custom-control-input" id="latest-sale"><label class="custom-control-label" for="latest-sale">Use full name to display </label></div>#}
+                                    {#                                </div>#}
+                                    <div class="col-12">
+                                        <ul class="align-center flex-wrap flex-sm-nowrap gx-4 gy-2">
+                                            <li>
+                                                <button type="submit" class="btn btn-lg btn-primary">Update Profile</button>
+                                            </li>
+                                            <li>
+                                                <button type="button" data-dismiss="modal" class="link link-light">Cancel</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="security">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row gy-4">
+                                <div class="col-12">
+                                    <h6>Update Password</h6>
+                                    <p class="text-warning">
+                                        For security reasons you will be logged out and required to re-login with
+                                        your new password
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_password">Password</label>
+                                        {{ passwordForm.password }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="id_confirm">Confirm Password</label>
+                                        {{ passwordForm.confirm }}
+                                    </div>
                                 </div>
                                 <div class="col-12">
                                     <ul class="align-center flex-wrap flex-sm-nowrap gx-4 gy-2">
-                                        <li><a href="user-profile-regular.html#" class="btn btn-lg btn-primary">Update Profile</a></li>
-                                        <li><a href="user-profile-regular.html#" data-dismiss="modal" class="link link-light">Cancel</a></li>
+                                        <li>
+                                            <button type="submit" class="btn btn-lg btn-primary">Update Password</button>
+                                        </li>
+                                        <li>
+                                            <button type="button" data-dismiss="modal" class="link link-light">Cancel</button>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane" id="address">
-                            <div class="row gy-4">
-                                <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="address-l1">Address Line 1</label><input type="text" class="form-control form-control-lg" id="address-l1" value="2337 Kildeer Drive"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="address-l2">Address Line 2</label><input type="text" class="form-control form-control-lg" id="address-l2" value=""></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="address-st">State</label><input type="text" class="form-control form-control-lg" id="address-st" value="Kentucky"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group"><label class="form-label" for="address-county">Country</label><select class="form-select" id="address-county" data-ui="lg"><option>Canada</option><option>United State</option><option>United Kindom</option><option>Australia</option><option>India</option><option>Bangladesh</option></select></div>
-                                </div>
-                                <div class="col-12">
-                                    <ul class="align-center flex-wrap flex-sm-nowrap gx-4 gy-2">
-                                        <li><a href="user-profile-regular.html#" class="btn btn-lg btn-primary">Update Address</a></li>
-                                        <li><a href="user-profile-regular.html#" data-dismiss="modal" class="link link-light">Cancel</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        $('#id_avatar').on('change', function(event){
+            $('#update-avatar-form')[0].submit()
+        });
+        {% if request.GET.edit == 'true' %}
+            $('#profile-edit').modal('show')
+        {% endif %}
+    </script>
 {% endblock %}

@@ -15,9 +15,9 @@ def user_directory_path(instance, filename):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
-    name = models.CharField(_('name'), max_length=30, blank=True)
-    phone = models.CharField(_('phone'), max_length=20, blank=True)
-    address = models.CharField(_('address'), max_length=50, blank=True)
+    name = models.CharField(_('name'), max_length=30)
+    phone = models.CharField(_('phone'), max_length=20)
+    address = models.CharField(_('address'), max_length=50)
     is_active = models.BooleanField(_('is active'), default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(_('is super'), default=False)
@@ -38,8 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class StudentProfile(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    department = models.CharField(_('department'), max_length=20, blank=True)
-    faculty = models.CharField(_('faculty'), max_length=20, blank=True)
+    department = models.CharField(_('department'), max_length=20)
+    faculty = models.CharField(_('faculty'), max_length=20)
     level = models.IntegerField(_('level'), default=100)
     reg_no = models.CharField(_('registration number'), max_length=20, unique=True)
 
