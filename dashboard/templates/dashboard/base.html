@@ -108,8 +108,18 @@
                         </div>
                         <div class="dropdown-inner">
                             <ul class="link-list">
-                                <li><a href="javascript:void(0)"><em class="icon ni ni-user-alt"></em><span>View Profile</span></a></li>
-                                <li><a href="javascript:void(0)"><em class="icon ni ni-setting-alt"></em><span>Update Profile</span></a></li>
+                                <li>
+                                    <a href="{% url 'home:dashboard:profile' %}">
+                                        <em class="icon ni ni-user-alt"></em>
+                                        <span>View Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'home:dashboard:profile' %}">
+                                        <em class="icon ni ni-setting-alt"></em>
+                                        <span>Update Profile</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="dropdown-inner">
@@ -201,8 +211,18 @@
                                         </div>
                                         <div class="dropdown-inner">
                                             <ul class="link-list">
-                                                <li><a href="javascript:void(0)"><em class="icon ni ni-user-alt"></em><span>View Profile</span></a></li>
-                                                <li><a href="javascript:void(0)"><em class="icon ni ni-setting-alt"></em><span>Update Profile</span></a></li>
+                                                <li>
+                                                    <a href="{% url 'home:dashboard:profile' %}">
+                                                        <em class="icon ni ni-user-alt"></em>
+                                                        <span>View Profile</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'home:dashboard:profile' %}">
+                                                        <em class="icon ni ni-setting-alt"></em>
+                                                        <span>Update Profile</span>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                         <div class="dropdown-inner">
@@ -234,6 +254,7 @@
         </div>
     </div>
 </div>
+{% block ext-content %}{% endblock %}
 
 <input type="hidden" id="upload-attach-url" value="{% url 'home:dashboard:upload_attach' %}">
 <input type="hidden" id="delete-attach-url" value="{% url 'home:dashboard:delete_attach' %}">

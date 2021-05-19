@@ -403,3 +403,8 @@ def staffs_delete(request, staff_id):
         except User.DoesNotExist:
             pass
     return redirect('home:dashboard:staffs')
+
+
+@login_required
+def profile(request):
+    return render(request, 'dashboard/user/updateProfile.html')
