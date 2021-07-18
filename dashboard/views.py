@@ -6,6 +6,8 @@ from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
 from .forms import (PasswordChangeForm, CreateGroupForm, AvatarUpdateForm, UserUpdateForm, StaffProfileUpdateForm, StudentProfileUpdateForm)
 from django.contrib.admin.views.decorators import staff_member_required
+import datetime
+import pytz
 
 
 @login_required
@@ -54,7 +56,16 @@ def index(request):
     response['users']['staffs'] = users.filter(is_staff=True).count()
     response['users']['students'] = users.filter(is_staff=False).count()
     response['users']['admins'] = StaffProfile.objects.filter(role='ADMIN').count()
-
+    # update level
+    if not request.user.is_staff:
+        registered_on = request.user.created_at
+        now = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
+        difference = now - registered_on
+        year = int(difference.total_seconds()/31540000.0010112)*100
+        level = 100 if (year*100) == 0 else (year*100)
+        student_profile = StudentProfile.objects.get(student=request.user.id)
+        student_profile.level = level
+        student_profile.save()
     return render(request, 'dashboard/index.html', response)
 
 
@@ -147,6 +158,7 @@ def register_staff(request):
     }
     if request.method == 'POST':
         try:
+            admins = User.objects.filter(is_staff=True)
             user = User.objects.create(
                 email=request.POST['email'],
                 name=request.POST['name'],
@@ -155,6 +167,8 @@ def register_staff(request):
                 avatar=request.FILES['avatar'],
                 is_staff=True
             )
+            if admins.count() == 0:
+                user.is_active = True
             user.set_password(request.POST['password'])
             user.save()
             staff_profile = StaffProfile.objects.create(
@@ -187,7 +201,9 @@ def signin(request):
         try:
             next_url = request.POST['next']
             user = User.objects.get(email=request.POST['email'])
-            user = authenticate(request, email=user.email, password=request.POST['password'])
+            if not user.is_active:
+                raise ValueError
+            user = authenticate(request, email=request.POST['email'], password=request.POST['password'])
             if user is not None:
                 login(request, user)
                 if next_url:
@@ -198,6 +214,9 @@ def signin(request):
         except User.DoesNotExist:
             response['error'] = True
             response['message'] = "Invalid Email or Password"
+        except ValueError:
+            response['error'] = True
+            response['message'] = "You have not been activated. Kindly contact the admin."
     return render(request, 'dashboard/auth/login.html', response)
 
 
@@ -219,7 +238,6 @@ def inbox(request):
 
 
 @login_required
-@staff_member_required
 def sent_inbox(request):
     user_message_groups = Group.objects.filter(members=request.user)
     return render(request, 'dashboard/inbox/inboxSent.html', {
@@ -228,7 +246,6 @@ def sent_inbox(request):
 
 
 @login_required
-@staff_member_required
 def inbox_create(request):
     messages = Message.objects.filter(receivers=request.user)
     user_message_groups = Group.objects.filter(members=request.user)
@@ -347,7 +364,7 @@ def inbox_content(request, inbox_id):
 @staff_member_required
 def groups(request):
     default_groups = Group.objects.filter(default=True)
-    custom_groups = Group.objects.filter(created_by=request.user)
+    custom_groups = Group.objects.filter(default=False, created_by=request.user)
     all_groups = [group for group in default_groups]
     all_groups = all_groups + [c_group for c_group in custom_groups]
     return render(request, 'dashboard/group/group.html', {

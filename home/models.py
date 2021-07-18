@@ -18,7 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(_('name'), max_length=30)
     phone = models.CharField(_('phone'), max_length=20)
     address = models.CharField(_('address'), max_length=50)
-    is_active = models.BooleanField(_('is active'), default=True)
+    is_active = models.BooleanField(_('is active'), default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(_('is super'), default=False)
     last_login = models.DateTimeField(blank=True, null=True)
